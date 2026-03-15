@@ -794,32 +794,24 @@ function renderResult(data) {
   });
   html += `</div></div>`;
 
-  // --- Installation Guide ---
+  // --- Work Instruction ---
   if (guide) {
-    html += `<div class="guide-card">
-      <div class="guide-header" onclick="toggleGuide('guideBody')">
-        <div class="guide-header-icon">📋</div>
-        <div class="guide-header-title">${guide.title || 'Installation Guide'}</div>
-        <div class="guide-toggle open" id="guideToggle">▲</div>
-      </div>
-      <div class="guide-body open" id="guideBody">`;
+    const uid = () => Math.random().toString(36).substr(2,6);
+    const scopeId = 'scope_'+uid(), toolsId = 'tools_'+uid(), safetyId = 'safety_'+uid();
 
+    // Scope of Work
+    html += `<div class="guide-card">
+      <div class="guide-header" onclick="toggleSection('${scopeId}','${scopeId}t')">
+        <div class="guide-header-icon">📋</div>
+        <div class="guide-header-title">Scope of Work</div>
+        <div class="guide-toggle open" id="${scopeId}t">▲</div>
+      </div>
+      <div class="guide-body open" id="${scopeId}">`;
     if (guide.scope && guide.scope.length) {
-      html += `<div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;">Scope of Work</div>
-        <ul class="scope-list">`;
-      guide.scope.forEach((s, i) => {
-        html += `<li data-n="${i+1}">${s}</li>`;
-      });
+      html += `<ul class="scope-list">`;
+      guide.scope.forEach((s, i) => { html += `<li data-n="${i+1}">${s}</li>`; });
       html += `</ul>`;
     }
-
-    if (guide.anchor) {
-      html += `<div style="margin-top:12px">
-        <div class="info-row"><span class="info-key">Anchor</span><span class="info-val highlight">${guide.anchor}</span></div>
-        <div class="info-row"><span class="info-key">Torque</span><span class="info-val highlight">${guide.torque}</span></div>
-      </div>`;
-    }
-
     if (guide.groundNote) {
       html += `<div style="margin-top:10px;background:var(--blue-bg);border-radius:var(--radius-sm);padding:10px 12px">
         <div style="font-size:0.78rem;font-weight:700;color:var(--blue);margin-bottom:6px">Foundation Cover</div>
@@ -828,14 +820,38 @@ function renderResult(data) {
         <div class="info-row"><span class="info-key">Load เมื่อ</span><span class="info-val">${guide.groundNote.cureNote}</span></div>
       </div>`;
     }
+    html += `</div></div>`;
 
-    if (guide.warnings && guide.warnings.length) {
-      html += `<div class="warning-box">`;
-      guide.warnings.forEach(w => { html += `<p>${w}</p>`; });
-      html += `</div>`;
+    // Tools & Equipment
+    if (guide.tools && guide.tools.length) {
+      html += `<div class="guide-card">
+        <div class="guide-header" onclick="toggleSection('${toolsId}','${toolsId}t')">
+          <div class="guide-header-icon">🔧</div>
+          <div class="guide-header-title">Tools & Equipment</div>
+          <div class="guide-toggle" id="${toolsId}t">▼</div>
+        </div>
+        <div class="guide-body" id="${toolsId}">
+          <ul class="scope-list">`;
+      guide.tools.forEach((t, i) => { html += `<li data-n="${i+1}">${t}</li>`; });
+      html += `</ul></div></div>`;
     }
 
-    html += `</div></div>`;
+    // Safety
+    if (guide.safety && guide.safety.length) {
+      html += `<div class="guide-card" style="border-color:#fca5a5">
+        <div class="guide-header" style="background:#fff5f5" onclick="toggleSection('${safetyId}','${safetyId}t')">
+          <div class="guide-header-icon">⛑️</div>
+          <div class="guide-header-title" style="color:#b91c1c">Safety & PPE</div>
+          <div class="guide-toggle" id="${safetyId}t" style="color:#b91c1c">▼</div>
+        </div>
+        <div class="guide-body" id="${safetyId}">
+          <ul class="scope-list">`;
+      guide.safety.forEach((s, i) => {
+        const isWarn = s.startsWith('⚠️');
+        html += `<li data-n="${i+1}" style="${isWarn ? 'color:#b91c1c;font-weight:600' : ''}">${s}</li>`;
+      });
+      html += `</ul></div></div>`;
+    }
   }
 
   // --- Standards ---
@@ -969,6 +985,16 @@ function toggleGuide(bodyId) {
   toggle.classList.toggle('open');
 }
 
+function toggleSection(bodyId, toggleId) {
+  const body = document.getElementById(bodyId);
+  const toggle = document.getElementById(toggleId);
+  if (!body || !toggle) return;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  toggle.textContent = isOpen ? '▼' : '▲';
+  toggle.classList.toggle('open');
+}
+
 function copyCode(code) {
   if (navigator.clipboard) {
     navigator.clipboard.writeText(code).then(() => showToast('Copied: ' + code));
@@ -986,31 +1012,196 @@ function showToast(msg) {
 
 function getGuide(siteType, position) {
   const p = siteType ? siteType.charAt(0) : 'N';
-  const isGround = position && position.includes('Ground');
-  const guides = {
+  const isGround  = position && position.includes('Ground');
+  const isTower   = position && position.includes('Tower');
+  const isContainer = position && position.includes('Container');
+  const isRooftop = position && position.includes('Rooftop');
+
+  const TOOLS_COMMON = [
+    'Impact Drill + Hammer Drill (SDS)',
+    'Torque Wrench 0–300 N·m (calibrated)',
+    'Chemical Anchor Gun + Nozzle',
+    'Rebar Detector / Ferroscan',
+    'Measuring Tape + Chalk Line',
+    'Spirit Level + Laser Level',
+    'Angle Grinder + Cutting Disc',
+    'Spanner Set (M12, M16)',
+    'Safety Harness + Lanyard',
+    'Scaffolding / Mobile Scaffold',
+  ];
+  const TOOLS_TOWER = [
+    'Tower Climbing Equipment',
+    'Full Body Harness EN361',
+    'Rope Access Kit',
+    'Hand Tools Set (Spanner, Wrench)',
+    'Torque Wrench 0–300 N·m (calibrated)',
+    'Measuring Tape + Spirit Level',
+    'Rigging Sling + Shackle (for panel hoisting)',
+  ];
+  const TOOLS_ROOF = [
+    'Impact Drill + Hammer Drill (SDS)',
+    'Torque Wrench 0–300 N·m (calibrated)',
+    'Chemical Anchor Gun + Nozzle',
+    'Rebar Detector / Ferroscan',
+    'Waterproofing Sealant Gun',
+    'Measuring Tape + Chalk Line',
+    'Spirit Level + Laser Level',
+    'Safety Harness + Lanyard',
+    'Roof Edge Protection System',
+  ];
+
+  const SAFETY_COMMON = [
+    'PPE: Safety Helmet, Safety Shoes, Hi-Vis Vest, Safety Gloves',
+    'Work Permit (Hot Work / Working at Height) ก่อนเริ่มงาน',
+    'Toolbox Talk ก่อนเริ่มงานทุกวัน',
+    'ตรวจสอบเครื่องมือและอุปกรณ์ก่อนใช้งาน',
+    'ห้ามทำงานขณะฝนตกหรือฟ้าผ่า',
+    'จัด Barricade รอบพื้นที่ทำงาน',
+  ];
+  const SAFETY_HEIGHT = [
+    'PPE: Full Body Harness + Double Lanyard (Working at Height > 2m)',
+    'Fall Arrest System ติดตั้งก่อนขึ้นทำงาน',
+    'Buddy System — ห้ามทำงานคนเดียวบนที่สูง',
+    'ตรวจสอบ Anchor Point รับน้ำหนักได้ ≥ 15 kN',
+    'Work Permit: Working at Height ต้องได้รับอนุมัติก่อน',
+    'Rescue Plan พร้อมก่อนเริ่มงานทุกครั้ง',
+  ];
+  const SAFETY_ELECTRICAL = [
+    'Lockout / Tagout (LOTO) ระบบไฟฟ้าก่อนทำงานทุกครั้ง',
+    'ตรวจสอบ Solar Panel ไม่มีแรงดันไฟก่อน handle',
+    'ใช้ Insulated Tools เมื่อทำงานใกล้สายไฟ',
+  ];
+
+  const data = {
     E: {
-      title: 'E-Type: Existing Structure Modification',
-      scope: ['ตรวจสอบโครงสร้างเดิม (As-Found Inspection)','ถ่าย As-Found Photo ก่อนเริ่มงานทุกครั้ง','เจาะ Chemical Bolt ตามตำแหน่งที่กำหนด','ติดตั้ง Cantilever Extension','ต่อ Extension Purlin','ติดตั้ง Solar Panel'],
-      anchor:'Chemical Bolt M16 HIT-RE500V3', torque:'M16: 195–230 N·m',
-      warnings:['⚠️ ห้ามรื้อโครงสร้างเดิมโดยไม่ได้รับอนุญาต','⚠️ ถ่าย As-Found Photo ก่อนเริ่มงานทุกครั้ง'],
+      title: 'E-Type — Existing Structure Modification',
+      scope: [
+        'ถ่าย As-Found Photo โครงสร้างเดิมก่อนเริ่มงานทุกครั้ง',
+        'ตรวจสอบสภาพโครงสร้างเดิม — ตรวจสนิม รอยแตก น็อต',
+        'Mark ตำแหน่งเจาะ Chemical Bolt ตามแบบ',
+        'ตรวจสอบตำแหน่ง Rebar ด้วย Rebar Detector',
+        'เจาะ Slab / Column ตามขนาดที่กำหนด (dia.18mm)',
+        'ทำความสะอาดรูเจาะด้วย Blow Pump + Brush',
+        'ฉีด Epoxy HIT-RE500V3 ตาม Volume ที่กำหนด',
+        'สอด Chemical Bolt M16 — รอ Cure ตามอุณหภูมิ',
+        'ติดตั้ง Cantilever Extension Beam ยึด Bolt ด้วย Torque 195–230 N·m',
+        'ติดตั้ง Extension Purlin / Rafter ตามแบบ',
+        'ติดตั้ง Solar Panel 650W + Mid/End Clamp',
+        'Tighten Clamp: Mid 25–35 N·m / End 15–25 N·m',
+        'ถ่ายรูป As-Built ทุกจุดหลังเสร็จงาน',
+      ],
+      tools: TOOLS_COMMON,
+      safety: [...SAFETY_COMMON, ...SAFETY_HEIGHT, ...SAFETY_ELECTRICAL,
+        '⚠️ ห้ามรื้อโครงสร้างเดิมโดยไม่ได้รับอนุญาต',
+        '⚠️ ถ่าย As-Found Photo ก่อนเริ่มงานทุกครั้ง — หากไม่มีรูปถือว่าไม่ได้ตรวจ',
+      ],
+      groundNote: null,
     },
-    N: {
-      title: 'N-Type: New Installation',
-      scope: isGround
-        ? ['Survey และวัด Slab / Foundation','เจาะ Slab ตามตำแหน่งที่ออกแบบ','ฉีด Chemical Bolt M16 HIT-RE500V3','รอ Cure (20°C ≥ 6hr / 35°C ≥ 2hr)','ติดตั้ง Cantilever / Column','ติดตั้ง Purlin','ติดตั้ง Solar Panel']
-        : ['Survey จุดติดตั้งบน Tower','ติดตั้ง Bracket ยึดกับ Tower Leg','ติดตั้ง Rail / Purlin Layer','ติดตั้ง Solar Panel'],
-      anchor:'Chemical Bolt M16 HIT-RE500V3', torque:'M16: 195–230 N·m',
-      groundNote: isGround ? {coverFooting:'75 mm (7.5 cm)',coverColumn:'50 mm (5 cm)',cureNote:'ห้ามโหลดก่อนครบ 28 วัน'} : null,
-      warnings:['⚠️ ห้าม Drill ทับ Rebar โดยเด็ดขาด','⚠️ ตรวจสอบตำแหน่ง Rebar ด้วย Rebar Detector ก่อนเจาะ'],
+    N_ground: {
+      title: 'N-Type — New Installation (On Ground)',
+      scope: [
+        'Survey และวัด Layout ตำแหน่ง Foundation ตามแบบ',
+        'Mark ตำแหน่ง Anchor Bolt บน Slab / พื้นดิน',
+        'ตรวจสอบตำแหน่ง Rebar ด้วย Rebar Detector ก่อนเจาะ',
+        'เจาะ Slab dia.18mm ลึกตามแบบ',
+        'ทำความสะอาดรูเจาะ — Blow Pump + Brush x3 ครั้ง',
+        'ฉีด Epoxy HIT-RE500V3 — รอ Cure 20°C ≥ 6hr / 35°C ≥ 2hr',
+        'ผูก Rebar (Cover Footing 75mm / Cover Column 50mm)',
+        'เทคอนกรีต Non-Shrink Grout — รอครบ 28 วันก่อนโหลด',
+        'ติดตั้ง Steel Column / Cantilever ยึด Anchor Bolt',
+        'Tighten Bolt M16: Torque 195–230 N·m',
+        'ติดตั้ง Purlin C-Section ตามแบบ',
+        'ติดตั้ง Solar Panel 650W + Clamp',
+        'Tighten Clamp: Mid 25–35 N·m / End 15–25 N·m',
+        'ถ่ายรูป As-Built ทุกจุดหลังเสร็จงาน',
+      ],
+      tools: TOOLS_COMMON,
+      safety: [...SAFETY_COMMON, ...SAFETY_ELECTRICAL,
+        '⚠️ ห้าม Drill ทับ Rebar โดยเด็ดขาด',
+        '⚠️ ห้ามโหลดโครงสร้างก่อนคอนกรีตครบ 28 วัน',
+        '⚠️ ตรวจ Rebar ด้วย Detector ทุกจุดก่อนเจาะ',
+      ],
+      groundNote: {coverFooting:'75 mm (7.5 cm)', coverColumn:'50 mm (5 cm)', cureNote:'ห้ามโหลดก่อนครบ 28 วัน'},
+    },
+    N_tower: {
+      title: 'N-Type — New Installation (On Tower)',
+      scope: [
+        'ตรวจสอบสภาพ Tower และ Tower Leg ก่อนขึ้น',
+        'Survey และ Mark ตำแหน่ง Bracket บน Tower Leg',
+        'ขึ้น Tower ด้วย Climbing Equipment — Buddy System',
+        'ติดตั้ง Tower Bracket Clamp ยึดกับ Tower Leg',
+        'Tighten Bolt M16: Torque 195–230 N·m',
+        'ติดตั้ง Rail / Purlin L-Section หรือ C-Section ตามแบบ',
+        'Hoist Solar Panel 650W ขึ้น Tower ด้วย Rigging Sling',
+        'ติดตั้ง Solar Panel + Mid/End Clamp',
+        'Tighten Clamp: Mid 25–35 N·m / End 15–25 N·m',
+        'ถ่ายรูป As-Built ทุกจุดหลังเสร็จงาน',
+      ],
+      tools: TOOLS_TOWER,
+      safety: [...SAFETY_COMMON, ...SAFETY_HEIGHT, ...SAFETY_ELECTRICAL,
+        '⚠️ ห้ามทำงานบน Tower คนเดียว — Buddy System เสมอ',
+        '⚠️ ตรวจสอบ Tower Load Capacity ก่อนติดตั้ง',
+        '⚠️ Rigging Plan สำหรับ Panel Hoisting ต้องอนุมัติก่อน',
+      ],
+      groundNote: null,
+    },
+    N_container: {
+      title: 'N-Type — New Installation (On Container Roof)',
+      scope: [
+        'ตรวจสอบสภาพ Container Roof — ความแข็งแรง สนิม รอยรั่ว',
+        'Survey และ Mark ตำแหน่ง Corner Box / Transfer Beam',
+        'ติดตั้ง Corner Box Adapter ที่ ISO Corner Fitting',
+        'ติดตั้ง Transfer Beam SS400 ตามแบบ',
+        'Tighten Bolt M16: Torque 195–230 N·m',
+        'ติดตั้ง Purlin C-Section บน Transfer Beam',
+        'ติดตั้ง Solar Panel 650W + Mid/End Clamp',
+        'Tighten Clamp: Mid 25–35 N·m / End 15–25 N·m',
+        'ตรวจสอบ Waterproofing จุดเชื่อมต่อทุกจุด',
+        'ถ่ายรูป As-Built ทุกจุดหลังเสร็จงาน',
+      ],
+      tools: [...TOOLS_COMMON, 'Waterproofing Sealant Gun'],
+      safety: [...SAFETY_COMMON, ...SAFETY_HEIGHT, ...SAFETY_ELECTRICAL,
+        '⚠️ ตรวจสอบ Container Roof รับน้ำหนักได้ตามแบบก่อนขึ้น',
+        '⚠️ ติดตั้ง Edge Protection รอบ Container Roof',
+      ],
+      groundNote: null,
     },
     R: {
-      title: 'R-Type: Rooftop Installation',
-      scope: ['Survey Slab บน Rooftop','วัด Slope / Waterproofing Layer','เจาะ Chemical Bolt ตามแบบ','ติดตั้ง Rail ยึดกับ Slab','ติดตั้ง Solar Panel บน Rail','ทำ Waterproofing Seal รอบ Anchor'],
-      anchor:'Chemical Bolt M16 HIT-RE500V3', torque:'M16: 195–230 N·m',
-      warnings:['⚠️ ตรวจสอบ Waterproofing หลังเจาะทุกจุด'],
+      title: 'R-Type — Rooftop Installation',
+      scope: [
+        'Survey Rooftop Slab — ตรวจสอบ Waterproofing Layer เดิม',
+        'Mark ตำแหน่ง Anchor ตามแบบ',
+        'ตรวจสอบตำแหน่ง Rebar ด้วย Rebar Detector ก่อนเจาะ',
+        'เจาะ Slab dia.18mm ทะลุ Waterproofing Layer',
+        'ทำความสะอาดรูเจาะ — Blow + Brush x3',
+        'ฉีด Epoxy HIT-RE500V3 — รอ Cure ตามอุณหภูมิ',
+        'ติดตั้ง Base Plate + Chemical Bolt M16',
+        'ทำ Waterproofing Seal รอบ Anchor ทุกจุด — ห้ามข้าม',
+        'ติดตั้ง Aluminum / SS400 Rail ตามแบบ',
+        'Tighten Bolt M16: Torque 195–230 N·m',
+        'ติดตั้ง Solar Panel 650W + Mid/End Clamp',
+        'Tighten Clamp: Mid 25–35 N·m / End 15–25 N·m',
+        'ตรวจ Waterproofing ทุกจุดอีกครั้งหลังติดตั้งเสร็จ',
+        'ถ่ายรูป As-Built ทุกจุดหลังเสร็จงาน',
+      ],
+      tools: TOOLS_ROOF,
+      safety: [...SAFETY_COMMON, ...SAFETY_HEIGHT, ...SAFETY_ELECTRICAL,
+        '⚠️ ตรวจสอบ Waterproofing ทุกจุดที่เจาะ — รั่วซึมห้ามปล่อยผ่าน',
+        '⚠️ ห้าม Drill ทับ Rebar โดยเด็ดขาด',
+        '⚠️ ติดตั้ง Roof Edge Protection ก่อนขึ้นทำงาน',
+      ],
+      groundNote: null,
     },
   };
-  return guides[p] || guides['N'];
+
+  if (p === 'E') return data.E;
+  if (p === 'R') return data.R;
+  if (p === 'N') {
+    if (isTower) return data.N_tower;
+    if (isContainer) return data.N_container;
+    return data.N_ground;
+  }
+  return data.N_ground;
 }
 
 function getStd() {
