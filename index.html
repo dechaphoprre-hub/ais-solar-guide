@@ -804,6 +804,16 @@ function parseBOQ(csv, codes) {
   const result = {};
   codes.forEach(code => { result[code] = { items: [], drawingLink: '', scopeNote: '' }; });
 
+  // สร้าง partial match map: "E1-G1L-C-Hatari 1" → "E1-G1L-C-Hatari"
+  function findMatchingCode(cellVal) {
+    if (!cellVal) return null;
+    // exact match ก่อน
+    if (codes.includes(cellVal)) return cellVal;
+    // partial match: หา code ที่ cellVal ขึ้นต้นด้วย (เช่น "Hatari 1" startsWith "Hatari")
+    const found = codes.find(code => cellVal.startsWith(code) || code.startsWith(cellVal));
+    return found || null;
+  }
+
   let currentCode = null;
   for (const row of rows) {
     const b = (row[1] || '').replace(/^"|"$/g,'').trim(); // Col B
@@ -816,8 +826,9 @@ function parseBOQ(csv, codes) {
 
     // Col B: ถ้ามีค่า = เจอ code หรือ section ใหม่, ถ้าว่าง = merged cell ใช้ currentCode ต่อ
     if (b) {
-      if (codes.includes(b)) { currentCode = b; }
-      else { currentCode = null; } // code อื่นที่ไม่ใช่ของเรา
+      const matched = findMatchingCode(b);
+      if (matched) { currentCode = matched; }
+      else { currentCode = null; }
     }
     // หยุดเมื่อเจอ row สรุปหรือ section divider
     if (c.startsWith('รวม') || c.startsWith('GRAND') || c.startsWith('──') || c.startsWith('—')) {
@@ -825,7 +836,13 @@ function parseBOQ(csv, codes) {
     }
     if (currentCode && result[currentCode] && c) {
       const qty = parseFloat(e) || 0;
-      result[currentCode].items.push({ mat: c, unit: d, qty, torque: h });
+      // ป้องกัน item ซ้ำ — ถ้า mat เดิมมีแล้ว รวม qty
+      const existing = result[currentCode].items.find(it => it.mat === c);
+      if (existing) {
+        existing.qty = Math.max(existing.qty, qty);
+      } else {
+        result[currentCode].items.push({ mat: c, unit: d, qty, torque: h });
+      }
       if (i && !result[currentCode].scopeNote) result[currentCode].scopeNote = i;
       if (j && !result[currentCode].drawingLink) result[currentCode].drawingLink = j;
     }
