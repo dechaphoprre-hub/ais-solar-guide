@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th"> 
+<html lang="th">
 <head>
 <meta charset="UTF-8">
 <link rel="preconnect" href="https://script.google.com">
@@ -193,7 +193,7 @@
 
   /* ─── STEP PROGRESS BAR ─── */
   .step-nav {
-    position: fixed; top: var(--header-h); left: 0; right: 0; z-index: 99;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 99;
     transition: top 0.2s ease;
     height: var(--nav-h);
     background: white;
@@ -253,12 +253,12 @@
   }
   .main.step1 {
     margin-top: var(--nav-h);
-    padding: 0 0 80px;
+    padding: 0;
   }
 
   /* ─── SCREEN ─── */
-  .screen { display: none !important; }
-  .screen.active { display: flex !important; flex-direction: column; animation: fadeUp 0.2s ease; will-change: opacity, transform; }
+  .screen { display: none; }
+  .screen.active { display: block; animation: fadeUp 0.2s ease; }
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(5px); }
     to   { opacity: 1; transform: translateY(0); }
@@ -268,9 +268,12 @@
   .screen-locked.active {
     height: calc(100dvh - var(--nav-h));
     overflow: hidden;
+    display: flex !important;
+    flex-direction: column;
   }
   .screen-locked.step1-locked.active {
     height: 100dvh;
+    margin-top: 0;
   }
   .screen-content-scroll {
     flex: 1; overflow-y: auto;
@@ -597,7 +600,7 @@
 </nav>
 
 <!-- MAIN -->
-<main class="main">
+<main class="main step1" id="mainContent">
 
   <!-- SCREEN 1: SITE TYPE — LANDING PAGE -->
   <div class="screen screen-locked step1-locked active" id="screen1">
@@ -1258,8 +1261,7 @@ function goToStep(step) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById('screen' + step).classList.add('active');
   state.step = step;
-  const mainEl = document.querySelector('.main');
-  if (mainEl) mainEl.className = step === 1 ? 'main step1' : 'main';
+
   // ล็อค scroll step 1-3, ปลดล็อค step 4-5
   if (step <= 3) {
     document.body.classList.remove('scrollable');
@@ -1310,15 +1312,17 @@ function updateNavUI() {
     else if (i === state.step) el.classList.add('active');
   }
 
-  // Header — hide on step 1 (hero replaces it), show on others
   const header = document.getElementById('mainHeader');
   const stepNav = document.getElementById('stepNav');
+  const mainEl = document.getElementById('mainContent');
   if (state.step === 1) {
     header.style.display = 'none';
     stepNav.style.top = '0';
+    if (mainEl) mainEl.className = 'main step1';
   } else {
     header.style.display = 'flex';
     stepNav.style.top = 'var(--header-h)';
+    if (mainEl) mainEl.className = 'main';
   }
   const titles = ['', 'Site Type', 'Position', 'Structure', 'Vendor', 'Result'];
   document.getElementById('headerTitle').textContent = 'AIS Solar — ' + titles[state.step];
