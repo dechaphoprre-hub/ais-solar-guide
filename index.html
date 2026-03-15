@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>AIS Solar Installation Guide</title>
 <style>
   /* ─── TOKENS ─── */
@@ -252,6 +252,40 @@
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(8px); }
     to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── LOCK SCREEN (Step 1-3) ─── */
+  .screen-locked {
+    height: calc(100dvh - var(--nav-h));
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .screen-locked.step1-locked {
+    height: 100dvh;
+  }
+  .screen-content-scroll {
+    flex: 1; overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 14px 14px 20px;
+  }
+  /* Auto scale grid to fit viewport */
+  @media (max-height: 700px) {
+    .type-card { padding: 12px 6px 10px; border-radius: 14px; }
+    .type-code { font-size: 18px; }
+    .type-kw { font-size: 9px; }
+    .type-badge { font-size: 8px; padding: 2px 6px; }
+    .hero-section { padding: 18px 16px 16px; }
+    .hero-title { font-size: 18px; }
+    .hero-logo-img { height: 20px; }
+    .list-btn { padding: 9px 12px; }
+    .list-icon { width: 30px; height: 30px; }
+  }
+  @media (max-height: 600px) {
+    .type-card { padding: 8px 4px 8px; }
+    .type-code { font-size: 16px; }
+    .hero-section { padding: 12px 16px 12px; }
+    .hero-logos { margin-bottom: 10px; }
+    .hero-divider { margin: 8px auto 0; }
   }
 
   /* ─── SECTION TITLE ─── */
@@ -557,7 +591,7 @@
 <main class="main">
 
   <!-- SCREEN 1: SITE TYPE — LANDING PAGE -->
-  <div class="screen active" id="screen1">
+  <div class="screen screen-locked step1-locked active" id="screen1">
     <div class="hero-section" id="heroSection">
       <div class="hero-logos">
         <img class="hero-logo-img" src="data:image/png;base64,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" alt="AIS">
@@ -571,7 +605,7 @@
       <div class="hero-sub">เลือก Site Type เพื่อเริ่มต้น</div>
       <div class="hero-divider"></div>
     </div>
-    <div style="padding:16px 14px 0">
+    <div class="screen-content-scroll" style="padding:14px 14px 16px">
       <div class="type-grid" id="siteTypeGrid">
         <div class="loading" style="grid-column:1/-1"><div class="spinner"></div><div class="loading-text">กำลังโหลด...</div></div>
       </div>
@@ -587,19 +621,23 @@
   </div>
 
   <!-- SCREEN 2: POSITION -->
-  <div class="screen" id="screen2">
-    <div class="section-title">Step 2 of 5</div>
-    <div class="section-subtitle">เลือก Position</div>
-    <div class="breadcrumb" id="bc2"></div>
-    <div class="choice-list" id="positionList"></div>
+  <div class="screen screen-locked" id="screen2">
+    <div class="screen-content-scroll">
+      <div class="section-title">Step 2 of 5</div>
+      <div class="section-subtitle">เลือก Position</div>
+      <div class="breadcrumb" id="bc2"></div>
+      <div class="choice-list" id="positionList"></div>
+    </div>
   </div>
 
   <!-- SCREEN 3: STRUCTURE TYPE -->
-  <div class="screen" id="screen3">
-    <div class="section-title">Step 3 of 5</div>
-    <div class="section-subtitle">เลือก Structure Type</div>
-    <div class="breadcrumb" id="bc3"></div>
-    <div class="choice-list" id="structureList"></div>
+  <div class="screen screen-locked" id="screen3">
+    <div class="screen-content-scroll">
+      <div class="section-title">Step 3 of 5</div>
+      <div class="section-subtitle">เลือก Structure Type</div>
+      <div class="breadcrumb" id="bc3"></div>
+      <div class="choice-list" id="structureList"></div>
+    </div>
   </div>
 
   <!-- SCREEN 4: VENDOR -->
@@ -1200,6 +1238,14 @@ function goToStep(step) {
   state.step = step;
   const mainEl = document.querySelector('.main');
   if (mainEl) mainEl.className = step === 1 ? 'main step1' : 'main';
+  // ล็อค scroll step 1-3, ปลดล็อค step 4-5
+  if (step <= 3) {
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+  }
 
   // Render screen content
   if (step === 1) renderStep1();
