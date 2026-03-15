@@ -597,9 +597,9 @@ window.onload = function() {
   grid.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">กำลังโหลดข้อมูล...</div></div>';
 
   // ดึง Structure Model จาก Sheet
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(STRUCTURE_TAB)}`;
-  fetch(url)
-    .then(r => r.text())
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(STRUCTURE_TAB)}`;
+  fetch(url, {mode:'cors'})
+    .then(r => { if(!r.ok) throw new Error('fetch fail'); return r.text(); })
     .then(csv => {
       const models = parseStructureCSV(csv);
       state.models = models.length > 0 ? models : MODELS_FALLBACK;
@@ -765,10 +765,10 @@ function renderStep5() {
   // Fetch BOQ from Google Sheets (published as CSV)
   const prefix = state.siteType ? state.siteType.charAt(0) : 'E';
   const tabName = BOQ_TABS[prefix] || 'BOQ Existing';
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&sheet=${encodeURIComponent(tabName)}`;
 
-  fetch(url)
-    .then(r => r.text())
+  fetch(url, {mode:'cors'})
+    .then(r => { if(!r.ok) throw new Error('fetch fail'); return r.text(); })
     .then(csv => {
       const boq = parseBOQ(csv, results.map(r => r.code));
       // For E-type: override guide with dynamic version based on actual BOQ
