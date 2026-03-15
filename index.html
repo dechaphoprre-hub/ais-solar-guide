@@ -816,7 +816,10 @@ function parseBOQ(csv, codes) {
     const j = (row[9] || '').replace(/^"|"$/g,'').trim(); // Col J drawing link
 
     if (codes.includes(b)) { currentCode = b; }
-    if (currentCode && result[currentCode] && c && !c.startsWith('รวม') && !c.startsWith('GRAND')) {
+    // หยุดทันทีเมื่อเจอ row สรุป หรือ section header หรือ code ใหม่ที่ไม่ใช่ของเรา
+    if (b && !codes.includes(b)) { currentCode = null; }
+    if (c.startsWith('รวม') || c.startsWith('GRAND') || c.startsWith('──')) { currentCode = null; }
+    if (currentCode && result[currentCode] && c) {
       const qty = parseFloat(e) || 0;
       result[currentCode].items.push({ mat: c, unit: d, qty, torque: h });
       if (i && !result[currentCode].scopeNote) result[currentCode].scopeNote = i;
@@ -950,7 +953,7 @@ function renderResult(data) {
     results.forEach(r => {
       const b = boq[r.code];
       if (!b) return;
-      const hasItems = b.items && b.items.some(i => i.qty > 0 || i.mat);
+      const hasItems = b.items && b.items.some(i => i.qty > 0);
       if (!hasItems && !b.drawingLink) return;
       const boqId = 'boq_'+r.code.replace(/[^a-z0-9]/gi,'_');
       const drawId = 'draw_'+r.code.replace(/[^a-z0-9]/gi,'_');
@@ -963,10 +966,10 @@ function renderResult(data) {
             <div class="guide-toggle" id="${boqId}t">▼</div>
           </div>
           <div class="guide-body" id="${boqId}">`;
-        b.items.forEach(item => {
+        b.items.filter(item => item.qty > 0).forEach(item => {
           html += `<div class="info-row">
             <span class="info-key" style="font-size:0.75rem;flex:1">${item.mat}</span>
-            <span style="font-size:0.8rem;font-weight:700;color:var(--blue);white-space:nowrap;margin-left:8px">${item.qty > 0 ? item.qty + ' ' + item.unit : '— ' + item.unit}</span>
+            <span style="font-size:0.8rem;font-weight:700;color:var(--blue);white-space:nowrap;margin-left:8px">${item.qty} ${item.unit}</span>
           </div>`;
           if (item.torque) html += `<div style="font-size:0.7rem;color:#b45309;padding:0 0 4px 0">${item.torque}</div>`;
         });
