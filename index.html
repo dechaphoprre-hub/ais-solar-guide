@@ -780,7 +780,15 @@ function renderStep5() {
     .then(r => r.text())
     .then(csv => {
       const boq = parseBOQ(csv, results.map(r => r.code));
-      renderResult({results, guide, standards, boq});
+      // For E-type: override guide with dynamic version based on actual BOQ
+      const prefix = state.siteType ? state.siteType.charAt(0) : '';
+      let finalGuide = guide;
+      if (prefix === 'E' && boq) {
+        const allItems = results.flatMap(r => (boq[r.code] && boq[r.code].items) || []);
+        const dynGuide = getDynamicGuide(state.siteType, state.position, allItems);
+        if (dynGuide) finalGuide = dynGuide;
+      }
+      renderResult({results, guide: finalGuide, standards, boq});
     })
     .catch(() => {
       renderResult({results, guide, standards, boq: null});
@@ -1116,6 +1124,117 @@ function showToast(msg) {
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ─── DYNAMIC GUIDE FROM BOQ ──────────────────────────
+function getDynamicGuide(siteType, position, boqItems) {
+  // ถ้าไม่ใช่ E-type หรือไม่มี BOQ ใช้ static guide เดิม
+  const prefix = siteType ? siteType.charAt(0) : '';
+  if (prefix !== 'E' || !boqItems || boqItems.length === 0) return null;
+
+  const has = (keyword) => boqItems.some(i => i.qty > 0 && i.mat.toLowerCase().includes(keyword.toLowerCase()));
+
+  const scope = [];
+  const tools = new Set();
+  const safety = new Set([
+    'PPE: Safety Helmet, Safety Shoes, Hi-Vis Vest, Safety Gloves',
+    'Work Permit (Working at Height) ก่อนเริ่มงาน',
+    'Toolbox Talk ก่อนเริ่มงานทุกวัน',
+    'ตรวจสอบเครื่องมือก่อนใช้งาน',
+    'ห้ามทำงานขณะฝนตกหรือฟ้าผ่า',
+    'จัด Barricade รอบพื้นที่ทำงาน',
+    'PPE: Full Body Harness + Double Lanyard (Working at Height > 2m)',
+    'Buddy System — ห้ามทำงานคนเดียวบนที่สูง',
+  ]);
+
+  // --- As-Found (always first) ---
+  scope.push('ถ่าย As-Found Photo โครงสร้างเดิมก่อนเริ่มงานทุกครั้ง');
+  scope.push('ตรวจสอบสภาพโครงสร้างเดิม — ตรวจสนิม รอยแตก น็อต');
+  tools.add('กล้องถ่ายรูป / มือถือ (As-Found Documentation)');
+
+  // --- Chemical Bolt / Drilling ---
+  if (has('Chemical Bolt') || has('Drill Bit') || has('Epoxy')) {
+    scope.push('Mark ตำแหน่งเจาะตามแบบ');
+    scope.push('ตรวจสอบตำแหน่ง Rebar ด้วย Rebar Detector ก่อนเจาะทุกจุด');
+    scope.push('เจาะรู dia.18mm ด้วย Hammer Drill ตามความลึกที่กำหนด');
+    scope.push('ทำความสะอาดรูเจาะ — Blow Pump + Brush x3 ครั้ง');
+    scope.push('ฉีด Epoxy HIT-RE500V3 ตาม Volume — รอ Cure 20°C ≥ 6hr / 35°C ≥ 2hr');
+    scope.push('สอด Chemical Bolt M16 — Torque 195–230 N·m หลัง Cure ครบ');
+    tools.add('Hammer Drill (SDS) + Drill Bit dia.18mm');
+    tools.add('Blow Pump + Wire Brush (ทำความสะอาดรู)');
+    tools.add('Chemical Anchor Gun + Mixing Nozzle');
+    tools.add('Rebar Detector / Ferroscan');
+    tools.add('Torque Wrench 0–300 N·m (calibrated)');
+    safety.add('⚠️ ห้าม Drill ทับ Rebar โดยเด็ดขาด — ตรวจ Detector ทุกจุด');
+    safety.add('⚠️ รอ Cure ครบก่อนรับน้ำหนัก — ห้ามเร่ง');
+  }
+
+  // --- Retrofit Baseplate ---
+  if (has('Retrofit Baseplate') || has('Retrofit Pole')) {
+    scope.push('ติดตั้ง Retrofit Baseplate / Pole Leg with C-Channel');
+    scope.push('Tighten Bolt M16: Torque 195–230 N·m');
+    scope.push('Spray Galvanize ทุกจุดที่ตัด/เจาะ/เชื่อม');
+    tools.add('Spanner Set M12, M16');
+    tools.add('Torque Wrench 0–300 N·m (calibrated)');
+    tools.add('Spray Galvanize Can');
+  }
+
+  // --- Non Shrink Grout ---
+  if (has('Grout') || has('Cement')) {
+    scope.push('ผสม Non-Shrink Grout Cement ตามอัตราส่วน');
+    scope.push('เท Grout รอบฐาน — รอครบ 28 วันก่อนโหลด');
+    tools.add('Mixing Drill + Paddle');
+    tools.add('Mixing Bucket');
+    tools.add('Formwork / ไม้แบบ');
+    safety.add('⚠️ ห้ามโหลดโครงสร้างก่อน Grout ครบ 28 วัน');
+  }
+
+  // --- Cantilever Extension ---
+  if (has('Cantilever')) {
+    scope.push('ติดตั้ง Cantilever Extension Beam SS400 ยึดกับ Anchor Bolt');
+    scope.push('ตรวจสอบระดับ Level ก่อน Tighten');
+    scope.push('Tighten Bolt M16: Torque 195–230 N·m');
+    scope.push('Spray Galvanize ทุกจุดที่ตัด/เจาะ');
+    tools.add('Spirit Level + Laser Level');
+    tools.add('Torque Wrench 0–300 N·m (calibrated)');
+    tools.add('Spanner Set M12, M16');
+    tools.add('Spray Galvanize Can');
+  }
+
+  // --- Purlin / Rafter / Bracing ---
+  if (has('Purlin') || has('Rafter') || has('Bracing')) {
+    scope.push('ติดตั้ง Purlin / Rafter / Bracing ตามแบบ');
+    scope.push('เจาะรูสำหรับน็อตยึด — Spray Galvanize ทุกจุดที่เจาะ/ตัดทันที');
+    scope.push('Tighten Bolt M12: Torque 80–95 N·m / M16: Torque 195–230 N·m');
+    tools.add('Impact Drill + Metal Drill Bit');
+    tools.add('Torque Wrench 0–300 N·m (calibrated)');
+    tools.add('Spanner Set M12, M16');
+    tools.add('Spray Galvanize Can');
+    safety.add('⚠️ Spray Galvanize ทุกจุดที่เจาะ/ตัด/เชื่อม ทันทีหลังทำ — ห้ามข้าม');
+  }
+
+  // --- Solar Panel ---
+  if (has('Solar Panel')) {
+    scope.push('ติดตั้ง Solar Panel 650W บน Purlin');
+    scope.push('ยึด Mid Clamp: Torque 25–35 N·m / End Clamp: Torque 15–25 N·m');
+    scope.push('ตรวจสอบ Grounding Lug ทุก Panel');
+    tools.add('Torque Wrench 0–50 N·m (calibrated) สำหรับ Clamp');
+    tools.add('Insulated Gloves (Solar Panel)');
+    safety.add('⚠️ Lockout/Tagout ระบบไฟฟ้าก่อน handle Solar Panel');
+    safety.add('⚠️ ใช้ Insulated Tools เมื่อทำงานใกล้ Solar Panel');
+  }
+
+  // --- Always last ---
+  scope.push('ถ่ายรูป As-Built ทุกจุดหลังเสร็จงาน');
+  scope.push('เก็บกวาดพื้นที่ทำงาน — นำวัสดุเหลือออกจากพื้นที่');
+
+  return {
+    title: 'E-Type — Work Instruction (จาก BOQ จริง)',
+    scope,
+    tools: [...tools],
+    safety: [...safety],
+    groundNote: null,
+  };
 }
 
 function getGuide(siteType, position) {
