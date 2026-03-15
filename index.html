@@ -525,71 +525,23 @@ const structIcons = {
   'Container': '📦', 'Roof Slab': '🏗️',
 };
 
-// ─── HARDCODED DATA ───────────────────────────────────
-const MODELS = [
-  {siteType:'E1',position:'On Ground',structureType:'2-Leg',vendor:'A-Plus',code:'E1-G2L-C-Aplus',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'1-Leg',vendor:'Hatari',code:'E1-G1L-C-Hatari',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'2-Leg',vendor:'Huawei 2020',code:'E1-G2L-HW',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'2-Leg',vendor:'Qualia',code:'E1-G2L-C-Qualia',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'1-Leg',vendor:'Huawei 2020',code:'E1-G1L-HW',description:''},
+// ─── DATA (ดึงจาก Google Sheet) ──────────────────────
+
+// BOQ tabs mapping
+const SHEET_ID = '1IN4ksJCaGzTQUYGacmxuL9zUBoJcFxVzWYsMNh79xjE';
+const STRUCTURE_TAB = 'Structure Model';
+const BOQ_TABS = { E:'BOQ Existing', N:'BOQ New', R:'BOQ Roof' };
+
+// Fallback hardcode ถ้า Sheet โหลดไม่ได้
+const MODELS_FALLBACK = [
   {siteType:'E1',position:'On Ground',structureType:'1-Leg',vendor:'A-Plus',code:'E1-G1L-C-Aplus',description:''},
-  {siteType:'E1',position:'On Tower',structureType:'2-Layer (L-Leg)',vendor:'A-Plus',code:'E1-T2-L',description:''},
-  {siteType:'E1',position:'On Tower',structureType:'2-Layer (Pipe-Leg)',vendor:'A-Plus',code:'E1-T2-P',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'1-Leg',vendor:'Interlink',code:'E1-G1L-ITEL',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'1-Leg',vendor:'Transpower',code:'E1-G1L-Transpower',description:''},
-  {siteType:'E1',position:'On Tower',structureType:'1-Layer (L-Leg)',vendor:'M.R.V',code:'E1-T1-L-MRV-3PV',description:''},
-  {siteType:'E1',position:'On Tower',structureType:'1-Layer (Pipe-Leg)',vendor:'M.R.V',code:'E1-T1-P-MRV-3PV',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'1-Leg',vendor:'M.R.V',code:'E1-G1L-MRV-3PV',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'4-Leg',vendor:'Hatari/AAL',code:'E1-G4L-H2.5-Hatari',description:'H=2.5m'},
-  {siteType:'E1',position:'On Ground',structureType:'4-Leg',vendor:'Hatari/AAL',code:'E1-G4L-H3.5-Hatari',description:'H=3.5m'},
-  {siteType:'E1',position:'On Tower',structureType:'1-Layer (L-Leg)',vendor:'A-Plus',code:'E1-T1-L-APlus',description:''},
-  {siteType:'E1',position:'On Tower',structureType:'1-Layer (Pipe-Leg)',vendor:'A-Plus',code:'E1-T1-P-APlus',description:''},
-  {siteType:'E1',position:'On Tower',structureType:'1-Layer (L-Leg)',vendor:'M.R.V',code:'E1-T1-L-MRV-1',description:''},
-  {siteType:'E1',position:'On Ground',structureType:'2-Leg',vendor:'Interlink',code:'E1-G2L-C-ITEL',description:''},
-  {siteType:'E1',position:'On Tower',structureType:'1-Layer (L-Leg)',vendor:'M.R.V',code:'E1-T1-L-MRV-2',description:''},
-  {siteType:'E2',position:'On Ground',structureType:'2-Leg',vendor:'A-Plus',code:'E2-G2L-C-Aplus',description:''},
-  {siteType:'E2',position:'On Ground',structureType:'1-Leg',vendor:'Huawei 2020',code:'E2-G1L-HW',description:''},
-  {siteType:'E2',position:'On Ground',structureType:'2-Leg',vendor:'Huawei 2020',code:'E2-G2L-HW-H3.0',description:'H=3.0m'},
-  {siteType:'E2',position:'On Ground',structureType:'2-Leg',vendor:'Qualia',code:'E2-G2L-C-Qualia',description:''},
-  {siteType:'E2',position:'On Ground',structureType:'2-Leg',vendor:'Interlink',code:'E2-G2L-C-ITEL',description:''},
-  {siteType:'E2',position:'On Ground',structureType:'2-Leg',vendor:'Huawei 2020',code:'E2-G2L-HW-H2.5',description:'H=2.5m'},
-  {siteType:'N1',position:'On Ground',structureType:'1-Leg',vendor:'TCC',code:'N1-G1L-Soil',description:'Soil Foundation'},
-  {siteType:'N1',position:'On Ground',structureType:'1-Leg',vendor:'TCC',code:'N1-G1L-Slab',description:'Slab Foundation'},
-  {siteType:'N1',position:'On Tower',structureType:'1-Layer (Pipe-Leg)',vendor:'TCC',code:'N1-T1-P',description:''},
-  {siteType:'N1',position:'On Tower',structureType:'1-Layer (L-Leg)',vendor:'TCC',code:'N1-T1-L',description:''},
-  {siteType:'N2',position:'On Ground',structureType:'1-Leg',vendor:'TCC',code:'N2-G1L-Soil',description:'Soil Foundation'},
-  {siteType:'N2',position:'On Ground',structureType:'1-Leg',vendor:'TCC',code:'N2-G1L-Slab',description:'Slab Foundation'},
-  {siteType:'N2',position:'On Tower',structureType:'1-Layer (Pipe-Leg)',vendor:'TCC',code:'N2-T1-P',description:''},
+  {siteType:'E1',position:'On Ground',structureType:'1-Leg',vendor:'Hatari',code:'E1-G1L-C-Hatari',description:''},
+  {siteType:'E1',position:'On Ground',structureType:'2-Leg',vendor:'A-Plus',code:'E1-G2L-C-Aplus',description:''},
+  {siteType:'N1',position:'On Ground',structureType:'1-Leg',vendor:'TCC',code:'N1-G1L-Soil',description:''},
   {siteType:'N2',position:'On Tower',structureType:'1-Layer (L-Leg)',vendor:'TCC',code:'N2-T1-L',description:''},
-  {siteType:'N2',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N2-CR-Corner Box',description:'Corner Box'},
-  {siteType:'N2',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N2-CR-Transfer Beam',description:'Transfer Beam'},
-  {siteType:'N3',position:'On Ground',structureType:'1-Leg',vendor:'TCC',code:'N3-G1L-Soil',description:'Soil Foundation'},
-  {siteType:'N3',position:'On Ground',structureType:'1-Leg',vendor:'TCC',code:'N3-G1L-Slab',description:'Slab Foundation'},
-  {siteType:'N3',position:'On Ground',structureType:'2-Leg',vendor:'TCC',code:'N3-G2L-Soil',description:'Soil Foundation'},
-  {siteType:'N3',position:'On Tower',structureType:'1-Layer (Pipe-Leg)',vendor:'TCC',code:'N3-T1-P',description:''},
-  {siteType:'N3',position:'On Tower',structureType:'2-Layer (Pipe-Leg)',vendor:'TCC',code:'N3-T2-P',description:''},
-  {siteType:'N3',position:'On Tower',structureType:'1-Layer (L-Leg)',vendor:'TCC',code:'N3-T1-L',description:''},
-  {siteType:'N3',position:'On Tower',structureType:'2-Layer (L-Leg)',vendor:'TCC',code:'N3-T2-L',description:''},
-  {siteType:'N3',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N3-CR-Corner Box',description:'Corner Box'},
-  {siteType:'N3',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N3-CR-Transfer Beam',description:'Transfer Beam'},
-  {siteType:'N4',position:'On Ground',structureType:'2-Leg',vendor:'TCC',code:'N4-G2L-Soil',description:'Soil Foundation'},
-  {siteType:'N4',position:'On Ground',structureType:'2-Leg',vendor:'TCC',code:'N4-G2L-Slab',description:'Slab Foundation'},
-  {siteType:'N4',position:'On Tower',structureType:'2-Layer (Pipe-Leg)',vendor:'TCC',code:'N4-T2-P',description:''},
-  {siteType:'N4',position:'On Tower',structureType:'2-Layer (L-Leg)',vendor:'TCC',code:'N4-T2-L',description:''},
-  {siteType:'N4',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N4-CR-2.6-Corner Box',description:'H=2.6m Corner Box'},
-  {siteType:'N4',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N4-CR-2.6-Transfer Beam',description:'H=2.6m Transfer Beam'},
-  {siteType:'N4',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N4-CR-3.0-Corner Box',description:'H=3.0m Corner Box'},
-  {siteType:'N4',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N4-CR-3.0-Transfer Beam',description:'H=3.0m Transfer Beam'},
-  {siteType:'N5',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N5-CR-Corner Box',description:'Corner Box'},
-  {siteType:'N5',position:'On Container Roof',structureType:'Container',vendor:'TCC',code:'N5-CR-Transfer Beam',description:'Transfer Beam'},
-  {siteType:'R1',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R1-R4L-H',description:'4PV High Tilt'},
-  {siteType:'R1',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R1-R4L',description:'4PV Standard'},
-  {siteType:'R1',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R0-R4L-H',description:'4PV High Tilt (R0)'},
-  {siteType:'R2',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R2-R4L-H',description:'4PV-H High'},
-  {siteType:'R2',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R2-R4L',description:'4PV-H Standard'},
-  {siteType:'R3',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R3-R6L-H',description:'6PV High Tilt'},
-  {siteType:'R3',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R3-R6L',description:'6PV Standard'},
+  {siteType:'R1',position:'On Rooftop',structureType:'Roof Slab',vendor:'TCC',code:'R1-R4L',description:''},
 ];
+
 const SITE_TYPE_INFO = [
   {code:'E1',type:'Existing',kw:'2–3 kW'},{code:'E2',type:'Existing',kw:'2–5 kW'},
   {code:'N1',type:'New',kw:'1 kW (2PV)'},{code:'N2',type:'New',kw:'2 kW (4PV)'},
@@ -597,6 +549,7 @@ const SITE_TYPE_INFO = [
   {code:'N5',type:'New',kw:'5 kW+'},
   {code:'R1',type:'Rooftop',kw:'4PV'},{code:'R2',type:'Rooftop',kw:'4PV-H'},{code:'R3',type:'Rooftop',kw:'6PV'},
 ];
+
 const LINKS = {
   reportForm:'https://docs.google.com/forms/d/e/1FAIpQLSflvNbb2kClKgWqBtFyPAzjcILb-C6nZBsY3fH-50ao_4dyBQ/viewform',
   structureIndex:'https://drive.google.com/drive/folders/1Vhx_rMN5BVosEAz11mmoUp059O6qLJpE',
@@ -605,12 +558,57 @@ const LINKS = {
   zteContact:'https://lookerstudio.google.com/reporting/82b1db96-5919-4a77-a4cb-f7370f03c567',
 };
 
+function parseStructureCSV(csv) {
+  const rows = csv.split('\n').map(row => {
+    const cols = []; let cur = ''; let inQ = false;
+    for (let c of row) {
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    cols.push(cur.trim());
+    return cols.map(c => c.replace(/^"|"$/g,'').trim());
+  });
+  // Row 0 = title row, Row 1 = step numbers, Row 2 = col headers, Data from Row 3+
+  // Col A=0=SiteType, D=3=Code, E=4=Position, F=5=StructureType, J=9=Vendor
+  const models = [];
+  for (let i = 3; i < rows.length; i++) {
+    const r = rows[i];
+    const siteType      = r[0] || '';
+    const code          = r[3] || '';
+    const position      = r[4] || '';
+    const structureType = r[5] || '';
+    const vendor        = r[9] || '';
+    const description   = r[7] || '';
+    if (siteType && code && code !== 'Structure Code') {
+      models.push({siteType, position, structureType, vendor, code, description});
+    }
+  }
+  return models;
+}
+
 // ─── INIT ─────────────────────────────────────────────
 window.onload = function() {
-  state.models = MODELS;
   state.siteTypeInfo = SITE_TYPE_INFO;
   state.links = LINKS;
-  renderStep1();
+
+  // แสดง loading ก่อน
+  const grid = document.getElementById('siteTypeGrid');
+  grid.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">กำลังโหลดข้อมูล...</div></div>';
+
+  // ดึง Structure Model จาก Sheet
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(STRUCTURE_TAB)}`;
+  fetch(url)
+    .then(r => r.text())
+    .then(csv => {
+      const models = parseStructureCSV(csv);
+      state.models = models.length > 0 ? models : MODELS_FALLBACK;
+      renderStep1();
+    })
+    .catch(() => {
+      state.models = MODELS_FALLBACK;
+      renderStep1();
+    });
 };
 
 // ─── RENDER STEP 1 ────────────────────────────────────
@@ -755,13 +753,6 @@ function renderStep4() {
 }
 
 // ─── RENDER STEP 5 ────────────────────────────────────
-const SHEET_ID = '1IN4ksJCaGzTQUYGacmxuL9zUBoJcFxVzWYsMNh79xjE';
-const BOQ_TABS = {
-  E: 'BOQ Existing',
-  N: 'BOQ New',
-  R: 'BOQ Roof',
-};
-
 function renderStep5() {
   setBreadcrumb('bc5', [state.siteType, state.position, state.structureType, state.vendor]);
   const content = document.getElementById('resultContent');
@@ -823,10 +814,15 @@ function parseBOQ(csv, codes) {
     const i = (row[8] || '').replace(/^"|"$/g,'').trim(); // Col I scope
     const j = (row[9] || '').replace(/^"|"$/g,'').trim(); // Col J drawing link
 
-    if (codes.includes(b)) { currentCode = b; }
-    // หยุดทันทีเมื่อเจอ row สรุป หรือ section header หรือ code ใหม่ที่ไม่ใช่ของเรา
-    if (b && !codes.includes(b)) { currentCode = null; }
-    if (c.startsWith('รวม') || c.startsWith('GRAND') || c.startsWith('──')) { currentCode = null; }
+    // Col B: ถ้ามีค่า = เจอ code หรือ section ใหม่, ถ้าว่าง = merged cell ใช้ currentCode ต่อ
+    if (b) {
+      if (codes.includes(b)) { currentCode = b; }
+      else { currentCode = null; } // code อื่นที่ไม่ใช่ของเรา
+    }
+    // หยุดเมื่อเจอ row สรุปหรือ section divider
+    if (c.startsWith('รวม') || c.startsWith('GRAND') || c.startsWith('──') || c.startsWith('—')) {
+      currentCode = null;
+    }
     if (currentCode && result[currentCode] && c) {
       const qty = parseFloat(e) || 0;
       result[currentCode].items.push({ mat: c, unit: d, qty, torque: h });
