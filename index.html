@@ -2,6 +2,8 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<link rel="preconnect" href="https://script.google.com">
+<link rel="dns-prefetch" href="https://script.google.com">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>AIS Solar Installation Guide</title>
 <style>
@@ -25,7 +27,7 @@
     --shadow-hover: 0 4px 20px rgba(70,130,180,0.22);
     --font:       'Sarabun', 'Helvetica Neue', Arial, sans-serif;
     --font-mono:  'Courier New', monospace;
-    --transition: 0.2s ease;
+    --transition: 0.15s ease;
     --header-h:   56px;
     --nav-h:      52px;
   }
@@ -85,9 +87,11 @@
     gap: 14px; margin-bottom: 18px;
   }
   .hero-logo-img {
-    height: 26px; width: auto;
-    filter: brightness(0) invert(1);
-    opacity: 0.9;
+    height: 28px; width: auto;
+    background: white;
+    border-radius: 6px;
+    padding: 4px 8px;
+    object-fit: contain;
   }
   .hero-logo-sep {
     width: 1px; height: 20px;
@@ -248,9 +252,9 @@
 
   /* ─── SCREEN ─── */
   .screen { display: none; }
-  .screen.active { display: block; animation: fadeUp 0.25s ease; }
+  .screen.active { display: block; animation: fadeUp 0.2s ease; will-change: opacity, transform; }
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(5px); }
     to   { opacity: 1; transform: translateY(0); }
   }
 
@@ -545,7 +549,7 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ─── FONT IMPORT ─── */
-  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap&font-display=swap');
 </style>
 </head>
 <body>
@@ -794,6 +798,19 @@ window.onload = function() {
   state.links = LINKS;
   state.models = MODELS_HARDCODE;
   renderStep1();
+
+  // Prefetch BOQ data ทั้งหมดใน background — พอถึง Step 5 จะได้จาก cache ทันที
+  setTimeout(() => {
+    ['E','N','R'].forEach(pfx => {
+      if (BOQ_CACHE[pfx]) return;
+      fetch(`${API_URL}?action=getBOQ&prefix=${pfx}`)
+        .then(r => r.json())
+        .then(json => {
+          if (json.status === 'ok') BOQ_CACHE[pfx] = json.data;
+        })
+        .catch(() => {});
+    });
+  }, 1500); // รอ 1.5s หลังแอปโหลดเสร็จก่อน
 };
 
 // ─── RENDER STEP 1 ────────────────────────────────────
