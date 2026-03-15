@@ -755,6 +755,13 @@ function renderStep4() {
 }
 
 // ─── RENDER STEP 5 ────────────────────────────────────
+const SHEET_ID = '1IN4ksJCaGzTQUYGacmxuL9zUBoJcFxVzWYsMNh79xjE';
+const BOQ_TABS = {
+  E: 'BOQ Existing',
+  N: 'BOQ New',
+  R: 'BOQ Roof',
+};
+
 function renderStep5() {
   setBreadcrumb('bc5', [state.siteType, state.position, state.structureType, state.vendor]);
   const content = document.getElementById('resultContent');
@@ -763,7 +770,60 @@ function renderStep5() {
   const results = MODELS.filter(m => m.siteType===state.siteType && m.position===state.position && m.structureType===state.structureType && m.vendor===state.vendor);
   const guide = getGuide(state.siteType, state.position);
   const standards = getStd();
-  setTimeout(() => renderResult({results, guide, standards}), 100);
+
+  // Fetch BOQ from Google Sheets (published as CSV)
+  const prefix = state.siteType ? state.siteType.charAt(0) : 'E';
+  const tabName = BOQ_TABS[prefix] || 'BOQ Existing';
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(tabName)}`;
+
+  fetch(url)
+    .then(r => r.text())
+    .then(csv => {
+      const boq = parseBOQ(csv, results.map(r => r.code));
+      renderResult({results, guide, standards, boq});
+    })
+    .catch(() => {
+      renderResult({results, guide, standards, boq: null});
+    });
+}
+
+function parseBOQ(csv, codes) {
+  // Parse CSV rows
+  const rows = csv.split('\n').map(row => {
+    const cols = [];
+    let cur = ''; let inQ = false;
+    for (let c of row) {
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else { cur += c; }
+    }
+    cols.push(cur.trim());
+    return cols;
+  });
+
+  // Find rows matching our structure codes
+  const result = {};
+  codes.forEach(code => { result[code] = { items: [], drawingLink: '', scopeNote: '' }; });
+
+  let currentCode = null;
+  for (const row of rows) {
+    const b = (row[1] || '').replace(/^"|"$/g,'').trim(); // Col B
+    const c = (row[2] || '').replace(/^"|"$/g,'').trim(); // Col C material
+    const d = (row[3] || '').replace(/^"|"$/g,'').trim(); // Col D unit
+    const e = (row[4] || '').replace(/^"|"$/g,'').trim(); // Col E QTY
+    const h = (row[7] || '').replace(/^"|"$/g,'').trim(); // Col H torque
+    const i = (row[8] || '').replace(/^"|"$/g,'').trim(); // Col I scope
+    const j = (row[9] || '').replace(/^"|"$/g,'').trim(); // Col J drawing link
+
+    if (codes.includes(b)) { currentCode = b; }
+    if (currentCode && result[currentCode] && c && !c.startsWith('รวม') && !c.startsWith('GRAND')) {
+      const qty = parseFloat(e) || 0;
+      result[currentCode].items.push({ mat: c, unit: d, qty, torque: h });
+      if (i && !result[currentCode].scopeNote) result[currentCode].scopeNote = i;
+      if (j && !result[currentCode].drawingLink) result[currentCode].drawingLink = j;
+    }
+  }
+  return result;
 }
 
 function renderResult(data) {
@@ -774,7 +834,7 @@ function renderResult(data) {
     return;
   }
 
-  const { results, guide, standards } = data;
+  const { results, guide, standards, boq } = data;
 
   // Build HTML
   let html = '';
@@ -883,6 +943,51 @@ function renderResult(data) {
         </div>
         </div>
       </div></div>`;
+  }
+
+  // --- BOQ ---
+  if (boq) {
+    results.forEach(r => {
+      const b = boq[r.code];
+      if (!b) return;
+      const hasItems = b.items && b.items.some(i => i.qty > 0 || i.mat);
+      if (!hasItems && !b.drawingLink) return;
+      const boqId = 'boq_'+r.code.replace(/[^a-z0-9]/gi,'_');
+      const drawId = 'draw_'+r.code.replace(/[^a-z0-9]/gi,'_');
+
+      if (hasItems) {
+        html += `<div class="guide-card">
+          <div class="guide-header" onclick="toggleSection('${boqId}','${boqId}t')">
+            <div class="guide-header-icon">📦</div>
+            <div class="guide-header-title">BOQ — รายการวัสดุ</div>
+            <div class="guide-toggle" id="${boqId}t">▼</div>
+          </div>
+          <div class="guide-body" id="${boqId}">`;
+        b.items.forEach(item => {
+          html += `<div class="info-row">
+            <span class="info-key" style="font-size:0.75rem;flex:1">${item.mat}</span>
+            <span style="font-size:0.8rem;font-weight:700;color:var(--blue);white-space:nowrap;margin-left:8px">${item.qty > 0 ? item.qty + ' ' + item.unit : '— ' + item.unit}</span>
+          </div>`;
+          if (item.torque) html += `<div style="font-size:0.7rem;color:#b45309;padding:0 0 4px 0">${item.torque}</div>`;
+        });
+        html += `</div></div>`;
+      }
+
+      if (b.drawingLink) {
+        html += `<div class="guide-card">
+          <div class="guide-header">
+            <div class="guide-header-icon">🖼️</div>
+            <div class="guide-header-title">Drawing</div>
+          </div>
+          <div class="guide-body open">
+            <a href="${b.drawingLink}" target="_blank" style="display:flex;align-items:center;gap:8px;background:#eaf2fa;border-radius:8px;padding:10px 14px;color:#1a3557;font-size:0.85rem;font-weight:600;text-decoration:none">
+              <span style="font-size:1.1rem">🔗</span> ดู Drawing — ${r.code}
+              <span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted)">↗ เปิดลิงก์</span>
+            </a>
+          </div>
+        </div>`;
+      }
+    });
   }
 
   // --- Quick Links ---
