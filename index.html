@@ -1727,50 +1727,86 @@ function openDrawing(boq, code) {
 // ─── PINCH ZOOM FOR MENU 2 PHOTOS ───────────────────
 function initPhotoZoom(img) {
   let scale = 1, startDist = 0, startScale = 1;
+  let panX = 0, panY = 0, startPanX = 0, startPanY = 0;
+  let startTouchX = 0, startTouchY = 0;
   let lastTap = 0;
 
-  // Double tap to zoom
+  function clampPan(s) {
+    const wrap = img.parentElement;
+    const maxX = (wrap.clientWidth  * (s - 1)) / 2;
+    const maxY = (wrap.clientHeight * (s - 1)) / 2;
+    panX = Math.min(maxX, Math.max(-maxX, panX));
+    panY = Math.min(maxY, Math.max(-maxY, panY));
+  }
+
+  function applyTransform() {
+    if (scale <= 1) {
+      img.style.transform = '';
+    } else {
+      img.style.transform = `scale(${scale}) translate(${panX/scale}px, ${panY/scale}px)`;
+    }
+    img.classList.toggle('zoomed', scale > 1);
+  }
+
+  function resetZoom() {
+    scale = 1; panX = 0; panY = 0;
+    img.style.transform = '';
+    img.classList.remove('zoomed');
+  }
+
+  // Double tap zoom
   img.addEventListener('click', function(e) {
     const now = Date.now();
     if (now - lastTap < 300) {
-      scale = scale === 1 ? 2.5 : 1;
-      img.style.transform = scale === 1 ? '' : `scale(${scale})`;
-      img.classList.toggle('zoomed', scale !== 1);
+      if (scale > 1) { resetZoom(); }
+      else { scale = 2.5; panX = 0; panY = 0; applyTransform(); }
     }
     lastTap = now;
   });
 
-  // Pinch zoom
-  img.parentElement.addEventListener('touchstart', function(e) {
+  const wrap = img.parentElement;
+
+  wrap.addEventListener('touchstart', function(e) {
     if (e.touches.length === 2) {
+      // Pinch start
       startDist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
       startScale = scale;
+      startPanX = panX; startPanY = panY;
+      e.preventDefault();
+    } else if (e.touches.length === 1 && scale > 1) {
+      // Pan start
+      startTouchX = e.touches[0].clientX - panX;
+      startTouchY = e.touches[0].clientY - panY;
       e.preventDefault();
     }
   }, {passive: false});
 
-  img.parentElement.addEventListener('touchmove', function(e) {
+  wrap.addEventListener('touchmove', function(e) {
     if (e.touches.length === 2) {
+      // Pinch zoom
       const dist = Math.hypot(
         e.touches[0].clientX - e.touches[1].clientX,
         e.touches[0].clientY - e.touches[1].clientY
       );
       scale = Math.min(4, Math.max(1, startScale * (dist / startDist)));
-      img.style.transform = scale <= 1 ? '' : `scale(${scale})`;
-      img.classList.toggle('zoomed', scale > 1);
+      clampPan(scale);
+      applyTransform();
+      e.preventDefault();
+    } else if (e.touches.length === 1 && scale > 1) {
+      // Pan
+      panX = e.touches[0].clientX - startTouchX;
+      panY = e.touches[0].clientY - startTouchY;
+      clampPan(scale);
+      applyTransform();
       e.preventDefault();
     }
   }, {passive: false});
 
-  img.parentElement.addEventListener('touchend', function(e) {
-    if (scale < 1.1) {
-      scale = 1;
-      img.style.transform = '';
-      img.classList.remove('zoomed');
-    }
+  wrap.addEventListener('touchend', function(e) {
+    if (scale < 1.1) resetZoom();
   });
 }
 
