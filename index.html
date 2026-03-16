@@ -1432,36 +1432,13 @@ function buildM2Fallback(models) {
 }
 
 function renderM2Vendors() {
+  state.m2Vendor = null; state.m2StructType = null; state.m2Position = null;
   document.getElementById('s6-step-label').textContent = 'Step 1 of 3';
-  document.getElementById('s6-subtitle').textContent = 'เลือก Vendor';
+  document.getElementById('s6-subtitle').textContent = 'เลือก Structure Type';
   document.getElementById('bc6').style.display = 'none';
 
-  const vendors = [...new Set(state.m2Data.map(m => m.vendor))].filter(Boolean).sort();
-  const content = document.getElementById('menu2Content');
-
-  let html = '<div class="m2-vendor-grid">';
-  vendors.forEach(v => {
-    const count = state.m2Data.filter(m => m.vendor === v).length;
-    html += `<button class="m2-vendor-btn" onclick="selectM2Vendor('${v}')">
-      <div class="m2-vendor-name">${v}</div>
-      <div class="m2-vendor-count">${count} แบบ</div>
-    </button>`;
-  });
-  html += '</div>';
-  content.innerHTML = html;
-}
-
-function selectM2Vendor(vendor) {
-  state.m2Vendor = vendor;
-  document.getElementById('s6-step-label').textContent = 'Step 2 of 3';
-  document.getElementById('s6-subtitle').textContent = 'เลือก Structure Type';
-  setBreadcrumb('bc6', [vendor]);
-
-  const types = [...new Set(
-    state.m2Data.filter(m => m.vendor === vendor).map(m => m.structureType)
-  )].filter(Boolean);
-
   const STRUCT_ORDER = ['1-Leg','2-Leg','4-Leg','1-Layer (L-Leg)','1-Layer (Pipe-Leg)','2-Layer (L-Leg)','2-Layer (Pipe-Leg)','Container','Roof Slab'];
+  const types = [...new Set(state.m2Data.map(m => m.structureType))].filter(Boolean);
   types.sort((a,b) => {
     const ai = STRUCT_ORDER.indexOf(a), bi = STRUCT_ORDER.indexOf(b);
     if(ai===-1&&bi===-1) return a.localeCompare(b);
@@ -1469,11 +1446,16 @@ function selectM2Vendor(vendor) {
     return ai-bi;
   });
 
+  const structIcons2 = {'1-Leg':'🔩','2-Leg':'🔩','4-Leg':'🔩','1-Layer (L-Leg)':'⚙️','1-Layer (Pipe-Leg)':'⚙️','2-Layer (L-Leg)':'⚙️','2-Layer (Pipe-Leg)':'⚙️','Container':'📦','Roof Slab':'🏗️'};
   let html = '<div class="choice-list">';
   types.forEach(t => {
-    html += `<button class="list-btn" onclick="selectM2StructType('${t}')">
-      <div class="list-icon">⚙️</div>
-      <div class="list-text"><div class="list-name">${t}</div></div>
+    const count = state.m2Data.filter(m => m.structureType === t).length;
+    html += `<button class="list-btn" onclick="selectM2StructType('${t.replace(/'/g,"\'")}')">
+      <div class="list-icon" style="font-size:16px">${structIcons2[t]||'🔧'}</div>
+      <div class="list-text">
+        <div class="list-name">${t}</div>
+        <div class="list-sub">${count} แบบ</div>
+      </div>
       <div class="list-arrow">›</div>
     </button>`;
   });
@@ -1481,29 +1463,57 @@ function selectM2Vendor(vendor) {
   document.getElementById('menu2Content').innerHTML = html;
 }
 
+function selectM2StructType_old() {} // replaced below
+
 function selectM2StructType(structType) {
   state.m2StructType = structType;
-  document.getElementById('s6-step-label').textContent = 'Step 3 of 3';
+  document.getElementById('s6-step-label').textContent = 'Step 2 of 3';
   document.getElementById('s6-subtitle').textContent = 'เลือก Position';
-  setBreadcrumb('bc6', [state.m2Vendor, structType]);
+  setBreadcrumb('bc6', [structType]);
 
   const positions = [...new Set(
-    state.m2Data
-      .filter(m => m.vendor === state.m2Vendor && m.structureType === structType)
-      .map(m => m.position)
+    state.m2Data.filter(m => m.structureType === structType).map(m => m.position)
   )].filter(Boolean);
 
   const posIcons2 = {'On Ground':'🌍','On Tower':'📡','On Rooftop':'🏠','On Container Roof':'📦'};
   let html = '<div class="choice-list">';
   positions.forEach(p => {
-    html += `<button class="list-btn" onclick="renderM2Result('${p}')">
-      <div class="list-icon">${posIcons2[p]||'📍'}</div>
+    html += `<button class="list-btn" onclick="selectM2Position('${p}')">
+      <div class="list-icon" style="font-size:16px">${posIcons2[p]||'📍'}</div>
       <div class="list-text"><div class="list-name">${p}</div></div>
       <div class="list-arrow">›</div>
     </button>`;
   });
   html += '</div>';
   document.getElementById('menu2Content').innerHTML = html;
+}
+
+function selectM2Position(position) {
+  state.m2Position = position;
+  document.getElementById('s6-step-label').textContent = 'Step 3 of 3';
+  document.getElementById('s6-subtitle').textContent = 'เลือก Vendor';
+  setBreadcrumb('bc6', [state.m2StructType, position]);
+
+  const vendors = [...new Set(
+    state.m2Data
+      .filter(m => m.structureType === state.m2StructType && m.position === position)
+      .map(m => m.vendor)
+  )].filter(Boolean).sort();
+
+  let html = '<div class="m2-vendor-grid">';
+  vendors.forEach(v => {
+    html += `<button class="m2-vendor-btn" onclick="selectM2Vendor('${v}')">
+      <div class="m2-vendor-name">${v}</div>
+    </button>`;
+  });
+  html += '</div>';
+  document.getElementById('menu2Content').innerHTML = html;
+}
+
+function selectM2Vendor(vendor) {
+  state.m2Vendor = vendor;
+  setBreadcrumb('bc6', [state.m2StructType, state.m2Position, vendor]);
+  renderM2Result(state.m2Position);
 }
 
 function renderM2Result(position) {
@@ -1513,9 +1523,9 @@ function renderM2Result(position) {
   document.getElementById('s6-subtitle').textContent = 'Existing Structure Detail';
 
   const rows = state.m2Data.filter(m =>
-    m.vendor === state.m2Vendor &&
     m.structureType === state.m2StructType &&
-    m.position === position
+    m.position === state.m2Position &&
+    m.vendor === state.m2Vendor
   );
 
   if (rows.length === 0) {
@@ -1615,10 +1625,9 @@ function goToStep(step) {
 
 function goBack() {
   if (state.m2Mode) {
-    // Menu 2 back logic
-    if (state.m2Position) { state.m2Position = null; selectM2StructType(state.m2StructType); }
-    else if (state.m2StructType) { state.m2StructType = null; selectM2Vendor(state.m2Vendor); }
-    else if (state.m2Vendor) { state.m2Vendor = null; renderM2Vendors(); }
+    if (state.m2Vendor) { state.m2Vendor = null; selectM2Position(state.m2Position); }
+    else if (state.m2Position) { state.m2Position = null; selectM2StructType(state.m2StructType); }
+    else if (state.m2StructType) { state.m2StructType = null; renderM2Vendors(); }
     else { state.m2Mode = false; goToStep(1); }
     return;
   }
