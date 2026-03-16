@@ -92,13 +92,15 @@
     background: radial-gradient(ellipse at 50% 0%, rgba(0,184,217,0.08) 0%, transparent 70%);
     pointer-events: none;
   }
-  .hero-zte-logo {
+  .hero-zte-text {
     position: absolute;
-    top: 12px; right: 14px;
-    height: 20px; width: auto;
-    object-fit: contain;
-    filter: brightness(0) invert(1) sepia(1) saturate(2) hue-rotate(170deg) brightness(1.4);
-    opacity: 0.7;
+    top: 12px; right: 16px;
+    font-family: var(--font-mono);
+    font-size: 15px; font-weight: 700;
+    color: #00d4f5;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    opacity: 0.85;
   }
   .hero-eyebrow {
     font-family: var(--font-mono);
@@ -442,13 +444,15 @@
   }
   .code-desc { font-size: 0.72rem; opacity: 1; margin-top: 2px; }
   .copy-btn {
-    background: rgba(255,255,255,0.2);
-    border: 1px solid rgba(255,255,255,0.3);
-    color: white; font-size: 0.7rem; padding: 4px 8px; border-radius: 6px;
-    cursor: pointer; flex-shrink: 0;
-    transition: background var(--transition);
+    background: rgba(0,184,217,0.15);
+    border: 1px solid rgba(0,184,217,0.4);
+    color: #00d4f5; font-size: 0.72rem; padding: 5px 10px; border-radius: 6px;
+    cursor: pointer; flex-shrink: 0; font-family: var(--font-mono);
+    letter-spacing: .04em; text-transform: uppercase;
+    transition: all var(--transition);
+    display: flex; align-items: center;
   }
-  .copy-btn:active { background: rgba(255,255,255,0.4); }
+  .copy-btn:active { background: rgba(0,184,217,0.3); }
 
   /* Guide card */
   .guide-card {
@@ -627,7 +631,7 @@
   <!-- SCREEN 1: SITE TYPE — LANDING PAGE -->
   <div class="screen screen-locked step1-locked active" id="screen1">
     <div class="hero-section" id="heroSection">
-      <img class="hero-zte-logo" src="data:image/png;base64,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" alt="ZTE">
+      <div class="hero-zte-text">ZTE</div>
       <div class="hero-eyebrow">Solar Installation</div>
       <div class="hero-title">Installation Guide</div>
       <div class="hero-sub">เลือก Site Type เพื่อเริ่มต้น</div>
@@ -1021,6 +1025,7 @@ function applyBOQ(results, guide, standards, boq, pfx) {
     const dynGuide = getDynamicGuide(results[0] ? results[0].siteType : 'E1', state.position, allItems);
     if (dynGuide) finalGuide = dynGuide;
   }
+  window._currentBOQ = boq;
   renderResult({results, guide: finalGuide, standards, boq});
 }
 
@@ -1111,7 +1116,9 @@ function renderResult(data) {
         <div class="code-value">${r.code}</div>
         ${r.description ? `<div class="code-desc">${r.description}</div>` : ''}
       </div>
-      <button class="copy-btn" onclick="copyCode('${r.code}')">Copy</button>
+      <button class="copy-btn draw-btn" onclick="openDrawing(window._currentBOQ, '${r.code}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>Drawing
+      </button>
     </div>`;
   });
   html += `</div></div>`;
@@ -1235,20 +1242,7 @@ function renderResult(data) {
         html += `</div></div>`;
       }
 
-      if (b.drawingLink) {
-        html += `<div class="guide-card">
-          <div class="guide-header">
-            <div class="guide-header-icon">🖼️</div>
-            <div class="guide-header-title">Drawing</div>
-          </div>
-          <div class="guide-body open">
-            <a href="${b.drawingLink}" target="_blank" style="display:flex;align-items:center;gap:8px;background:#eaf2fa;border-radius:8px;padding:10px 14px;color:#1a3557;font-size:0.85rem;font-weight:600;text-decoration:none">
-              <span style="font-size:1.1rem">🔗</span> ดู Drawing — ${r.code}
-              <span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted)">↗ เปิดลิงก์</span>
-            </a>
-          </div>
-        </div>`;
-      }
+
     });
   }
 
@@ -1385,6 +1379,19 @@ function copyCode(code) {
     navigator.clipboard.writeText(code).then(() => showToast('Copied: ' + code));
   } else {
     showToast(code);
+  }
+}
+
+function openDrawing(boq, code) {
+  if (!boq) { showToast('ยังไม่มี Drawing'); return; }
+  // หา drawing link จาก boq โดย partial match
+  const keys = Object.keys(boq);
+  const matched = keys.find(k => k === code || k.startsWith(code) || code.startsWith(k));
+  const link = matched && boq[matched] ? boq[matched].drawingLink : null;
+  if (link && link.trim()) {
+    window.open(link, '_blank');
+  } else {
+    showToast('ยังไม่มี Drawing สำหรับ ' + code);
   }
 }
 
