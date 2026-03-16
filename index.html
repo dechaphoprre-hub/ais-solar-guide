@@ -580,7 +580,7 @@
 <body>
 
 <!-- HEADER -->
-<header class="header">
+<header class="header" id="mainHeader">
   <button class="header-back" id="btnBack" onclick="goBack()">‹</button>
   <div class="header-logo">
     <svg viewBox="0 0 24 24" fill="none" stroke="#4682B4" stroke-width="2.5">
@@ -622,12 +622,6 @@
   <!-- SCREEN 1: SITE TYPE — LANDING PAGE -->
   <div class="screen screen-locked step1-locked active" id="screen1">
     <div class="hero-section" id="heroSection">
-      
-        
-        <div class="hero-logo-sep"></div>
-        
-      </div>
-      
       <img class="hero-zte-logo" src="data:image/png;base64,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" alt="ZTE">
       <div class="hero-eyebrow">Solar Installation</div>
       <div class="hero-title">Installation Guide</div>
@@ -1330,13 +1324,12 @@ function updateNavUI() {
   const stepNav = document.getElementById('stepNav');
   const mainEl = document.getElementById('mainContent');
   if (state.step === 1) {
-    header.style.display = 'none';
-    stepNav.style.display = 'none';
+    if (header) header.style.display = 'none';
+    if (stepNav) stepNav.style.display = 'none';
     if (mainEl) mainEl.className = 'main step1';
   } else {
-    header.style.display = 'flex';
-    stepNav.style.display = 'flex';
-    stepNav.style.top = 'var(--header-h)';
+    if (header) header.style.display = 'flex';
+    if (stepNav) { stepNav.style.display = 'flex'; stepNav.style.top = 'var(--header-h)'; }
     if (mainEl) mainEl.className = 'main';
   }
   const titles = ['', 'Site Type', 'Position', 'Structure', 'Vendor', 'Result'];
