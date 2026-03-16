@@ -17,7 +17,7 @@
     --danger:     #ff4d6d;
     --success:    #00e5a0;
     --text:       #e2e8f0;
-    --text-muted: #718096;
+    --text-muted: #8ba8c0;
     --border:     rgba(0,184,217,0.2);
     --card-bg:    #0f1923;
     --page-bg:    #0a1018;
@@ -206,24 +206,25 @@
     background: #060d14;
     border-bottom: 1px solid rgba(0,184,217,0.2);
     display: flex; align-items: center; justify-content: center;
+    padding: 0 12px;
     gap: 0;
-    padding: 0 8px;
   }
   .step-item {
     display: flex; align-items: center; gap: 0;
-    flex: 1; max-width: 68px;
+    flex: 0 0 auto;
     flex-direction: column;
     position: relative;
   }
-  .step-item:not(:last-child)::after {
-    content: '';
-    position: absolute; right: -50%; top: 13px;
-    width: 100%; height: 1px;
+  .step-line {
+    flex: 1;
+    height: 1px;
     background: rgba(0,184,217,0.2);
-    z-index: 0;
+    margin-bottom: 18px;
     transition: background var(--transition);
+    align-self: flex-start;
+    margin-top: 14px;
   }
-  .step-item.done:not(:last-child)::after { background: var(--blue); }
+  .step-line.done { background: #00d4f5; }
   .step-dot {
     width: 28px; height: 28px;
     border-radius: 50%;
@@ -313,7 +314,7 @@
     letter-spacing: 0.12em; margin-bottom: 4px;
   }
   .section-subtitle {
-    font-size: 1rem; font-weight: 700; color: #f0f6ff; margin-bottom: 14px;
+    font-size: 1rem; font-weight: 700; color: #ffffff; margin-bottom: 14px;
     letter-spacing: .02em;
   }
   .breadcrumb {
@@ -399,7 +400,7 @@
     flex-shrink: 0; font-size: 1rem;
   }
   .list-text { flex: 1; }
-  .list-name { font-size: 0.9rem; font-weight: 600; color: #e8f4ff; }
+  .list-name { font-size: 0.9rem; font-weight: 600; color: #f0f8ff; }
   .list-sub  { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
   .list-arrow { color: rgba(0,184,217,0.4); font-size: 1rem; }
 
@@ -470,7 +471,7 @@
   .scope-list { list-style: none; padding: 0; }
   .scope-list li {
     padding: 6px 0 6px 26px; position: relative;
-    font-size: 0.83rem; border-bottom: 1px solid rgba(255,255,255,0.06); color: #d8eaf8;
+    font-size: 0.83rem; border-bottom: 1px solid rgba(255,255,255,0.06); color: #e8f2ff;
   }
   .scope-list li:last-child { border-bottom: none; }
   .scope-list li::before {
@@ -496,7 +497,7 @@
   }
   .info-row:last-child { border-bottom: none; }
   .info-key { color: #6a8fa8; min-width: 90px; font-size: 0.78rem; }
-  .info-val { color: #d8eaf8; font-weight: 600; flex: 1; }
+  .info-val { color: #e8f2ff; font-weight: 600; flex: 1; }
   .info-val.highlight { color: #00d4f5; font-family: var(--font-mono); }
 
   /* Standards table */
@@ -598,18 +599,22 @@
     <div class="step-dot">1</div>
     <div class="step-label">Site Type</div>
   </div>
+  <div class="step-line" id="line12"></div>
   <div class="step-item" id="nav2">
     <div class="step-dot">2</div>
     <div class="step-label">Position</div>
   </div>
+  <div class="step-line" id="line23"></div>
   <div class="step-item" id="nav3">
     <div class="step-dot">3</div>
     <div class="step-label">Structure</div>
   </div>
+  <div class="step-line" id="line34"></div>
   <div class="step-item" id="nav4">
     <div class="step-dot">4</div>
     <div class="step-label">Vendor</div>
   </div>
+  <div class="step-line" id="line45"></div>
   <div class="step-item" id="nav5">
     <div class="step-dot">5</div>
     <div class="step-label">Result</div>
@@ -1319,6 +1324,11 @@ function updateNavUI() {
     if (i < state.step) el.classList.add('done');
     else if (i === state.step) el.classList.add('active');
   }
+  // Update connector lines
+  [[12,1],[23,2],[34,3],[45,4]].forEach(([id,step]) => {
+    const line = document.getElementById('line'+id);
+    if (line) line.className = state.step > step ? 'step-line done' : 'step-line';
+  });
 
   const header = document.getElementById('mainHeader');
   const stepNav = document.getElementById('stepNav');
