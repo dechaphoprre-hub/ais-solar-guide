@@ -567,6 +567,80 @@
   .empty-icon { font-size: 2.5rem; margin-bottom: 10px; }
   .empty-text { font-size: 0.88rem; line-height: 1.6; }
 
+  /* ─── MENU 2 ─── */
+  .m2-vendor-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 10px; margin-bottom: 14px;
+  }
+  .m2-vendor-btn {
+    background: #2a3a52;
+    border: 1px solid rgba(94,160,214,0.2);
+    border-radius: 12px; padding: 16px 12px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    cursor: pointer; transition: all var(--transition);
+    position: relative; overflow: hidden;
+  }
+  .m2-vendor-btn::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent);
+  }
+  .m2-vendor-btn:active { transform: scale(0.97); }
+  .m2-vendor-btn:hover { border-color: rgba(244,168,32,0.4); background: rgba(244,168,32,0.05); }
+  .m2-vendor-btn.selected { border-color: var(--accent); background: rgba(244,168,32,0.08); }
+  .m2-vendor-name { font-size: 0.9rem; font-weight: 700; color: #f0ece4; }
+  .m2-vendor-count { font-family: var(--font-mono); font-size: 0.68rem; color: #a8b8cc; }
+
+  .m2-photo-card {
+    background: #243348;
+    border: 1px solid rgba(94,160,214,0.2);
+    border-radius: 14px; overflow: hidden;
+    margin-bottom: 12px;
+  }
+  .m2-photo-wrap {
+    width: 100%; aspect-ratio: 16/10;
+    background: #1c2535;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .m2-photo-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .m2-photo-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: rgba(94,160,214,0.4);
+  }
+  .m2-photo-placeholder svg { width: 36px; height: 36px; }
+  .m2-photo-placeholder span { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: .06em; }
+  .m2-photo-info { padding: 12px 14px; }
+  .m2-code-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .m2-code {
+    font-family: var(--font-mono); font-size: 0.95rem;
+    font-weight: 700; color: #f4a820;
+    letter-spacing: .04em;
+  }
+  .m2-goto-btn {
+    background: rgba(94,160,214,0.15);
+    border: 1px solid rgba(94,160,214,0.35);
+    color: #7ab8e8; font-family: var(--font-mono);
+    font-size: 0.68rem; padding: 5px 10px; border-radius: 6px;
+    cursor: pointer; letter-spacing: .06em; text-transform: uppercase;
+    transition: all var(--transition);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .m2-goto-btn:active { background: rgba(94,160,214,0.3); }
+  .m2-spec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .m2-spec-cell {
+    background: rgba(94,160,214,0.06);
+    border: 1px solid rgba(94,160,214,0.12);
+    border-radius: 6px; padding: 7px 10px;
+  }
+  .m2-spec-key { font-family: var(--font-mono); font-size: 0.65rem; color: #a8b8cc; text-transform: uppercase; letter-spacing: .06em; }
+  .m2-spec-val { font-size: 0.82rem; font-weight: 600; color: #f0ece4; margin-top: 2px; }
+
   /* ─── TOAST ─── */
   .toast {
     position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -643,11 +717,23 @@
       </div>
       <div class="info-strip">
         <div class="info-strip-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#4682B4" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5ea0d6" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
         </div>
         <div class="info-strip-text">
           <strong>E</strong> = Modify โครงสร้างเดิม &nbsp;·&nbsp; <strong>N</strong> = ติดตั้งใหม่ &nbsp;·&nbsp; <strong>R</strong> = Rooftop
         </div>
+      </div>
+      <div style="margin-top:10px">
+        <button onclick="openMenu2()" style="width:100%;background:rgba(244,168,32,0.1);border:1px solid rgba(244,168,32,0.35);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all 0.15s">
+          <div style="width:32px;height:32px;background:rgba(244,168,32,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f4a820" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          </div>
+          <div style="flex:1;text-align:left">
+            <div style="font-size:0.85rem;font-weight:700;color:#f4a820">Existing Structure Survey</div>
+            <div style="font-family:var(--font-mono);font-size:0.68rem;color:#a8b8cc;margin-top:1px">ตรวจสอบโครงสร้างเดิมก่อน Modify</div>
+          </div>
+          <div style="color:#f4a820;font-size:1rem">›</div>
+        </button>
       </div>
     </div>
   </div>
@@ -690,6 +776,16 @@
     </div>
   </div>
 
+  <!-- SCREEN 6: MENU 2 — EXISTING STRUCTURE DETAIL -->
+  <div class="screen" id="screen6">
+    <div class="screen-content-scroll" style="padding:14px 14px 80px">
+      <div class="section-title" id="s6-step-label">Step 1 of 3</div>
+      <div class="section-subtitle" id="s6-subtitle">เลือก Vendor</div>
+      <div class="breadcrumb" id="bc6" style="display:none"></div>
+      <div id="menu2Content"></div>
+    </div>
+  </div>
+
 </main>
 
 <!-- ACTION BAR -->
@@ -709,9 +805,15 @@ const state = {
   position: null,
   structureType: null,
   vendor: null,
-  models: [],      // all models from GAS
-  siteTypeInfo: [], // site type descriptions
-  links: {}
+  models: [],
+  siteTypeInfo: [],
+  links: {},
+  // Menu 2 state
+  m2Mode: false,
+  m2Vendor: null,
+  m2StructType: null,
+  m2Position: null,
+  m2Data: [],      // E-type rows from Sheet with K,L,M
 };
 
 // ─── POSITION ICONS ──────────────────────────────────
@@ -1252,6 +1354,7 @@ function renderResult(data) {
     html += `<div class="links-section">
       <div class="section-title" style="margin-bottom:8px">ลิงก์ที่เกี่ยวข้อง</div>
       <div class="links-grid">
+        <button class="link-btn" onclick="openMenu2()" style="width:100%;text-align:left;background:rgba(244,168,32,0.08);border-color:rgba(244,168,32,0.3)"><span class="link-icon">🔍</span><span style="color:#f4a820;font-weight:700">Existing Structure Survey</span><span class="link-arrow" style="color:#f4a820">→</span></button>
         <a href="${links.structureIndex}" target="_blank" class="link-btn"><span class="link-icon">📁</span>ดูสารบัญโครงสร้าง<span class="link-arrow">↗</span></a>
         <a href="${links.guidelineModi}" target="_blank" class="link-btn"><span class="link-icon">📄</span>Guideline Modi<span class="link-arrow">↗</span></a>
         <a href="${links.reportForm}" target="_blank" class="link-btn"><span class="link-icon">📝</span>รายงานหน้างาน<span class="link-arrow">↗</span></a>
@@ -1265,6 +1368,216 @@ function renderResult(data) {
   html += `<button class="btn-primary" onclick="resetAll()" style="width:100%;margin-top:16px">🔄 เริ่มใหม่</button>`;
 
   content.innerHTML = html;
+}
+
+// ─── MENU 2 ──────────────────────────────────────────
+function openMenu2() {
+  state.m2Mode = true;
+  state.m2Vendor = null;
+  state.m2StructType = null;
+  state.m2Position = null;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen6').classList.add('active');
+
+  // Hide header, show back btn
+  const header = document.getElementById('mainHeader');
+  const stepNav = document.getElementById('stepNav');
+  const mainEl = document.getElementById('mainContent');
+  if (header) header.style.display = 'flex';
+  if (stepNav) stepNav.style.display = 'none';
+  if (mainEl) mainEl.className = 'main';
+  document.getElementById('btnBack').classList.add('visible');
+  document.getElementById('headerTitle').textContent = 'AIS Solar — Structure Survey';
+
+  // Fetch M2 data from API
+  if (state.m2Data.length === 0) {
+    fetchM2Data();
+  } else {
+    renderM2Vendors();
+  }
+}
+
+function fetchM2Data() {
+  const content = document.getElementById('menu2Content');
+  content.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">กำลังโหลด...</div></div>';
+  fetch(`${API_URL}?action=getModels`)
+    .then(r => r.json())
+    .then(json => {
+      // Filter only E-type, use models data + K,L,M from separate call
+      fetch(`${API_URL}?action=getSurveyData`)
+        .then(r => r.json())
+        .then(sj => {
+          state.m2Data = sj.status === 'ok' ? sj.data : buildM2Fallback(json.data || []);
+          renderM2Vendors();
+        })
+        .catch(() => {
+          state.m2Data = buildM2Fallback(json.data || []);
+          renderM2Vendors();
+        });
+    })
+    .catch(() => {
+      state.m2Data = buildM2Fallback(MODELS_HARDCODE);
+      renderM2Vendors();
+    });
+}
+
+function buildM2Fallback(models) {
+  return models
+    .filter(m => m.siteType && m.siteType.startsWith('E'))
+    .map(m => ({ ...m, checkPoint: '', spec: '', photoLink: '' }));
+}
+
+function renderM2Vendors() {
+  document.getElementById('s6-step-label').textContent = 'Step 1 of 3';
+  document.getElementById('s6-subtitle').textContent = 'เลือก Vendor';
+  document.getElementById('bc6').style.display = 'none';
+
+  const vendors = [...new Set(state.m2Data.map(m => m.vendor))].filter(Boolean).sort();
+  const content = document.getElementById('menu2Content');
+
+  let html = '<div class="m2-vendor-grid">';
+  vendors.forEach(v => {
+    const count = state.m2Data.filter(m => m.vendor === v).length;
+    html += `<button class="m2-vendor-btn" onclick="selectM2Vendor('${v}')">
+      <div class="m2-vendor-name">${v}</div>
+      <div class="m2-vendor-count">${count} แบบ</div>
+    </button>`;
+  });
+  html += '</div>';
+  content.innerHTML = html;
+}
+
+function selectM2Vendor(vendor) {
+  state.m2Vendor = vendor;
+  document.getElementById('s6-step-label').textContent = 'Step 2 of 3';
+  document.getElementById('s6-subtitle').textContent = 'เลือก Structure Type';
+  setBreadcrumb('bc6', [vendor]);
+
+  const types = [...new Set(
+    state.m2Data.filter(m => m.vendor === vendor).map(m => m.structureType)
+  )].filter(Boolean);
+
+  const STRUCT_ORDER = ['1-Leg','2-Leg','4-Leg','1-Layer (L-Leg)','1-Layer (Pipe-Leg)','2-Layer (L-Leg)','2-Layer (Pipe-Leg)','Container','Roof Slab'];
+  types.sort((a,b) => {
+    const ai = STRUCT_ORDER.indexOf(a), bi = STRUCT_ORDER.indexOf(b);
+    if(ai===-1&&bi===-1) return a.localeCompare(b);
+    if(ai===-1) return 1; if(bi===-1) return -1;
+    return ai-bi;
+  });
+
+  let html = '<div class="choice-list">';
+  types.forEach(t => {
+    html += `<button class="list-btn" onclick="selectM2StructType('${t}')">
+      <div class="list-icon">⚙️</div>
+      <div class="list-text"><div class="list-name">${t}</div></div>
+      <div class="list-arrow">›</div>
+    </button>`;
+  });
+  html += '</div>';
+  document.getElementById('menu2Content').innerHTML = html;
+}
+
+function selectM2StructType(structType) {
+  state.m2StructType = structType;
+  document.getElementById('s6-step-label').textContent = 'Step 3 of 3';
+  document.getElementById('s6-subtitle').textContent = 'เลือก Position';
+  setBreadcrumb('bc6', [state.m2Vendor, structType]);
+
+  const positions = [...new Set(
+    state.m2Data
+      .filter(m => m.vendor === state.m2Vendor && m.structureType === structType)
+      .map(m => m.position)
+  )].filter(Boolean);
+
+  const posIcons2 = {'On Ground':'🌍','On Tower':'📡','On Rooftop':'🏠','On Container Roof':'📦'};
+  let html = '<div class="choice-list">';
+  positions.forEach(p => {
+    html += `<button class="list-btn" onclick="renderM2Result('${p}')">
+      <div class="list-icon">${posIcons2[p]||'📍'}</div>
+      <div class="list-text"><div class="list-name">${p}</div></div>
+      <div class="list-arrow">›</div>
+    </button>`;
+  });
+  html += '</div>';
+  document.getElementById('menu2Content').innerHTML = html;
+}
+
+function renderM2Result(position) {
+  state.m2Position = position;
+  setBreadcrumb('bc6', [state.m2Vendor, state.m2StructType, position]);
+  document.getElementById('s6-step-label').textContent = 'ผลลัพธ์';
+  document.getElementById('s6-subtitle').textContent = 'Existing Structure Detail';
+
+  const rows = state.m2Data.filter(m =>
+    m.vendor === state.m2Vendor &&
+    m.structureType === state.m2StructType &&
+    m.position === position
+  );
+
+  if (rows.length === 0) {
+    document.getElementById('menu2Content').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-text">ไม่พบข้อมูล</div></div>';
+    return;
+  }
+
+  let html = '';
+  rows.forEach(row => {
+    const hasPhoto = row.photoLink && row.photoLink.trim();
+    // Convert Google Drive link to direct image if possible
+    let imgSrc = '';
+    if (hasPhoto) {
+      const match = row.photoLink.match(/\/d\/([a-zA-Z0-9_-]+)/);
+      if (match) imgSrc = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w800`;
+      else imgSrc = row.photoLink;
+    }
+
+    html += `<div class="m2-photo-card">
+      <div class="m2-photo-wrap">
+        ${hasPhoto
+          ? `<img src="${imgSrc}" alt="${row.code}" onerror="this.parentElement.innerHTML='<div class=\'m2-photo-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>PHOTO COMING SOON</span></div>'">`
+          : `<div class="m2-photo-placeholder">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:36px;height:36px">
+                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                <circle cx="8.5" cy="8.5" r="1.5"/>
+                <polyline points="21 15 16 10 5 21"/>
+              </svg>
+              <span>PHOTO COMING SOON</span>
+            </div>`
+        }
+      </div>
+      <div class="m2-photo-info">
+        <div class="m2-code-row">
+          <div class="m2-code">${row.code}</div>
+          <button class="m2-goto-btn" onclick="goToMenu5From2('${row.siteType}','${row.position}','${row.structureType}','${row.vendor}')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            Guide
+          </button>
+        </div>
+        <div class="m2-spec-grid">
+          <div class="m2-spec-cell">
+            <div class="m2-spec-key">Check Point</div>
+            <div class="m2-spec-val">${row.checkPoint || '—'}</div>
+          </div>
+          <div class="m2-spec-cell">
+            <div class="m2-spec-key">Spec</div>
+            <div class="m2-spec-val">${row.spec || '—'}</div>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  // Reset button
+  html += `<button class="btn-primary" onclick="renderM2Vendors()" style="width:100%;margin-top:8px">เริ่มใหม่</button>`;
+  document.getElementById('menu2Content').innerHTML = html;
+}
+
+function goToMenu5From2(siteType, position, structureType, vendor) {
+  state.m2Mode = false;
+  state.siteType = siteType;
+  state.position = position;
+  state.structureType = structureType;
+  state.vendor = vendor;
+  goToStep(5);
 }
 
 // ─── NAVIGATION ───────────────────────────────────────
@@ -1297,6 +1610,14 @@ function goToStep(step) {
 }
 
 function goBack() {
+  if (state.m2Mode) {
+    // Menu 2 back logic
+    if (state.m2Position) { state.m2Position = null; selectM2StructType(state.m2StructType); }
+    else if (state.m2StructType) { state.m2StructType = null; selectM2Vendor(state.m2Vendor); }
+    else if (state.m2Vendor) { state.m2Vendor = null; renderM2Vendors(); }
+    else { state.m2Mode = false; goToStep(1); }
+    return;
+  }
   if (state.step > 1) goToStep(state.step - 1);
 }
 
