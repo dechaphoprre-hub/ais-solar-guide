@@ -602,9 +602,17 @@
     background: #1c2535;
     display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden;
+    touch-action: pinch-zoom;
+    cursor: zoom-in;
   }
   .m2-photo-wrap img {
     width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.2s ease;
+    transform-origin: center center;
+    will-change: transform;
+  }
+  .m2-photo-wrap img.zoomed {
+    cursor: zoom-out;
   }
   .m2-photo-placeholder {
     display: flex; flex-direction: column; align-items: center; gap: 8px;
@@ -1533,7 +1541,7 @@ function renderM2Result(position) {
     html += `<div class="m2-photo-card">
       <div class="m2-photo-wrap">
         ${hasPhoto
-          ? `<img src="${imgSrc}" alt="${row.code}" onerror="this.parentElement.innerHTML='<div class=\'m2-photo-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>PHOTO COMING SOON</span></div>'">`
+          ? `<img src="${imgSrc}" alt="${row.code}" onload="initPhotoZoom(this)" onerror="this.parentElement.innerHTML='<div class=\'m2-photo-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><polyline points=\'21 15 16 10 5 21\'/></svg><span>PHOTO COMING SOON</span></div>'">`
           : `<div class="m2-photo-placeholder">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:36px;height:36px">
                 <rect x="3" y="3" width="18" height="18" rx="2"/>
@@ -1714,6 +1722,56 @@ function openDrawing(boq, code) {
   } else {
     showToast('ยังไม่มี Drawing สำหรับ ' + code);
   }
+}
+
+// ─── PINCH ZOOM FOR MENU 2 PHOTOS ───────────────────
+function initPhotoZoom(img) {
+  let scale = 1, startDist = 0, startScale = 1;
+  let lastTap = 0;
+
+  // Double tap to zoom
+  img.addEventListener('click', function(e) {
+    const now = Date.now();
+    if (now - lastTap < 300) {
+      scale = scale === 1 ? 2.5 : 1;
+      img.style.transform = scale === 1 ? '' : `scale(${scale})`;
+      img.classList.toggle('zoomed', scale !== 1);
+    }
+    lastTap = now;
+  });
+
+  // Pinch zoom
+  img.parentElement.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) {
+      startDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      startScale = scale;
+      e.preventDefault();
+    }
+  }, {passive: false});
+
+  img.parentElement.addEventListener('touchmove', function(e) {
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      scale = Math.min(4, Math.max(1, startScale * (dist / startDist)));
+      img.style.transform = scale <= 1 ? '' : `scale(${scale})`;
+      img.classList.toggle('zoomed', scale > 1);
+      e.preventDefault();
+    }
+  }, {passive: false});
+
+  img.parentElement.addEventListener('touchend', function(e) {
+    if (scale < 1.1) {
+      scale = 1;
+      img.style.transform = '';
+      img.classList.remove('zoomed');
+    }
+  });
 }
 
 function showToast(msg) {
