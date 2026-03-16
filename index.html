@@ -2,8 +2,13 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="max-age=3600">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://script.google.com">
 <link rel="dns-prefetch" href="https://script.google.com">
+<meta name="theme-color" content="#1c2535">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>AIS Solar Installation Guide</title>
 <style>
@@ -661,7 +666,7 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ─── FONT IMPORT ─── */
-  @import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap&font-display=swap');
+  /* Font loaded via <link> tag in head for better performance */
 </style>
 </head>
 <body>
@@ -931,7 +936,7 @@ const MODELS = MODELS_HARDCODE;
 const BOQ_CACHE = {};
 
 // ─── INIT ─────────────────────────────────────────────
-window.onload = function() {
+document.addEventListener("DOMContentLoaded", function() {
   state.siteTypeInfo = SITE_TYPE_INFO;
   state.links = LINKS;
   state.models = MODELS_HARDCODE;
@@ -939,19 +944,9 @@ window.onload = function() {
   updateNavUI();
   renderStep1();
 
-  // Prefetch BOQ data ทั้งหมดใน background — พอถึง Step 5 จะได้จาก cache ทันที
-  setTimeout(() => {
-    ['E','N','R'].forEach(pfx => {
-      if (BOQ_CACHE[pfx]) return;
-      fetch(`${API_URL}?action=getBOQ&prefix=${pfx}`)
-        .then(r => r.json())
-        .then(json => {
-          if (json.status === 'ok') BOQ_CACHE[pfx] = json.data;
-        })
-        .catch(() => {});
-    });
-  }, 1500); // รอ 1.5s หลังแอปโหลดเสร็จก่อน
-};
+  // Prefetch BOQ — ทีละ tab ไม่พร้อมกัน ไม่ block render
+  setTimeout(() => prefetchNextBOQ(['E','N','R'], 0), 3000);
+});
 
 // ─── RENDER STEP 1 ────────────────────────────────────
 function renderStep1() {
@@ -1808,6 +1803,19 @@ function initPhotoZoom(img) {
   wrap.addEventListener('touchend', function(e) {
     if (scale < 1.1) resetZoom();
   });
+}
+
+function prefetchNextBOQ(tabs, idx) {
+  if (idx >= tabs.length) return;
+  const pfx = tabs[idx];
+  if (BOQ_CACHE[pfx]) { prefetchNextBOQ(tabs, idx+1); return; }
+  fetch(`${API_URL}?action=getBOQ&prefix=${pfx}`)
+    .then(r => r.json())
+    .then(json => {
+      if (json.status === 'ok') BOQ_CACHE[pfx] = json.data;
+      setTimeout(() => prefetchNextBOQ(tabs, idx+1), 800);
+    })
+    .catch(() => setTimeout(() => prefetchNextBOQ(tabs, idx+1), 800));
 }
 
 function showToast(msg) {
