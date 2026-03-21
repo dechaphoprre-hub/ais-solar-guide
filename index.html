@@ -305,7 +305,16 @@
     .hero-title { font-size: 18px; }
     .hero-logo-img { height: 20px; }
     .list-btn { padding: 9px 12px; }
-    .list-icon { width: 30px; height: 30px; }
+    .list-icon-badge {
+    width: 36px; height: 36px; border-radius: 8px;
+    background: rgba(244,168,32,0.12);
+    border: 1px solid rgba(244,168,32,0.3);
+    color: #f4a820; font-family: var(--font-mono);
+    font-size: 1rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .list-icon { width: 30px; height: 30px; }
   }
   @media (max-height: 600px) {
     .type-card { padding: 8px 4px 8px; }
@@ -1035,7 +1044,7 @@ function renderStep2() {
     const btn = document.createElement('button');
     btn.className = 'list-btn';
     btn.innerHTML = `
-      ${(() => { const icons = {'On Ground':'🌍','On Tower':'📡','On Rooftop':'🏠','On Container Roof':'📦'}; return `<div class="list-icon" style="font-size:16px">${icons[pos]||'📍'}</div>`; })()}'}</div>
+      ${(() => { const icons = {'On Ground':'🌍','On Tower':'📡','On Rooftop':'🏠','On Container Roof':'📦'}; return `<div class="list-icon" style="font-size:16px">${icons[pos]||'📍'}</div>`; })()}
       <div class="list-text">
         <div class="list-name">${pos}</div>
       </div>
@@ -1074,7 +1083,7 @@ function renderStep3() {
     const btn = document.createElement('button');
     btn.className = 'list-btn';
     btn.innerHTML = `
-      ${(() => { const icons = {'1-Leg':'🔩','2-Leg':'🔩','4-Leg':'🔩','1-Layer (L-Leg)':'⚙️','1-Layer (Pipe-Leg)':'⚙️','2-Layer (L-Leg)':'⚙️','2-Layer (Pipe-Leg)':'⚙️','Container':'📦','Roof Slab':'🏗️'}; return `<div class="list-icon" style="font-size:16px">${icons[st]||'🔧'}</div>`; })()}'}</div>
+      ${(() => { const icons = {'1-Leg':'🔩','2-Leg':'🔩','4-Leg':'🔩','1-Layer (L-Leg)':'⚙️','1-Layer (Pipe-Leg)':'⚙️','2-Layer (L-Leg)':'⚙️','2-Layer (Pipe-Leg)':'⚙️','Container':'📦','Roof Slab':'🏗️'}; return `<div class="list-icon" style="font-size:16px">${icons[st]||'🔧'}</div>`; })()}
       <div class="list-text"><div class="list-name">${st}</div></div>
       <div class="list-arrow">›</div>
     `;
