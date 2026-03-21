@@ -70,17 +70,19 @@
   .header-logo svg { width: 20px; height: 20px; }
   .header-title { color: white; font-weight: 700; font-size: 1rem; letter-spacing: 0.02em; flex: 1; }
   .header-back {
-    background: rgba(255,255,255,0.18);
-    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
     color: white;
     width: 34px; height: 34px;
     border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
     display: none;
+    align-items: center; justify-content: center;
+    flex-shrink: 0;
+    padding: 0;
+    line-height: 1;
   }
   .header-back.visible { display: flex; }
+  .header-back svg { width: 16px; height: 16px; display: block; }
 
   /* ─── LANDING HERO ─── */
   .hero-section {
@@ -579,7 +581,7 @@
   .m2-vendor-btn {
     background: #2a3a52;
     border: 1px solid rgba(94,160,214,0.2);
-    border-radius: 12px; padding: 16px 12px;
+    border-radius: 12px; padding: 14px 10px;
     display: flex; flex-direction: column; align-items: center; gap: 6px;
     cursor: pointer; transition: all var(--transition);
     position: relative; overflow: hidden;
@@ -592,8 +594,19 @@
   .m2-vendor-btn:active { transform: scale(0.97); }
   .m2-vendor-btn:hover { border-color: rgba(244,168,32,0.4); background: rgba(244,168,32,0.05); }
   .m2-vendor-btn.selected { border-color: var(--accent); background: rgba(244,168,32,0.08); }
-  .m2-vendor-name { font-size: 0.9rem; font-weight: 700; color: #f0ece4; }
+  .m2-vendor-name { font-size: 0.85rem; font-weight: 700; color: #f0ece4; }
   .m2-vendor-count { font-family: var(--font-mono); font-size: 0.68rem; color: #a8b8cc; }
+  .m2-vendor-initial {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(244,168,32,0.15);
+    border: 1px solid rgba(244,168,32,0.35);
+    color: #f4a820;
+    font-family: var(--font-mono);
+    font-size: 0.85rem; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    letter-spacing: .04em;
+    margin-bottom: 2px;
+  }
 
   .m2-photo-card {
     background: #243348;
@@ -673,7 +686,11 @@
 
 <!-- HEADER -->
 <header class="header" id="mainHeader">
-  <button class="header-back" id="btnBack" onclick="goBack()">‹</button>
+  <button class="header-back" id="btnBack" onclick="goBack()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </button>
   <div class="header-logo">
     <svg viewBox="0 0 24 24" fill="none" stroke="#4682B4" stroke-width="2.5">
       <path d="M12 2L2 7l10 5 10-5-10-5z"/>
@@ -1018,7 +1035,7 @@ function renderStep2() {
     const btn = document.createElement('button');
     btn.className = 'list-btn';
     btn.innerHTML = `
-      <div class="list-icon" style="padding:0;background:none;border:none">${posIcons[pos] || '<div style="width:36px;height:36px;border-radius:8px;background:rgba(94,160,214,0.12);display:flex;align-items:center;justify-content:center;color:#7ab8e8">·</div>'}</div>
+      ${(()=>{const l={'On Ground':'G','On Tower':'T','On Rooftop':'R','On Container Roof':'C'};return `<div class="list-icon-badge">${l[pos]||pos[0]}</div>`})()}'}</div>
       <div class="list-text">
         <div class="list-name">${pos}</div>
       </div>
@@ -1057,7 +1074,7 @@ function renderStep3() {
     const btn = document.createElement('button');
     btn.className = 'list-btn';
     btn.innerHTML = `
-      <div class="list-icon" style="padding:0;background:none;border:none">${structIcons[st] || '<div style="width:36px;height:36px;border-radius:8px;background:rgba(94,160,214,0.12);display:flex;align-items:center;justify-content:center;color:#7ab8e8">·</div>'}</div>
+      <div class="list-icon-badge">${st.replace(/1-Layer/,"1L").replace(/2-Layer/,"2L").replace(/\(L-Leg\)/,"L").replace(/\(Pipe-Leg\)/,"P").replace(/-Leg/,"").replace("Roof Slab","RS").replace("Container","CR").slice(0,4)}</div>'}</div>
       <div class="list-text"><div class="list-name">${st}</div></div>
       <div class="list-arrow">›</div>
     `;
@@ -1459,7 +1476,7 @@ function renderM2Vendors() {
   types.forEach(t => {
     const count = state.m2Data.filter(m => m.structureType === t).length;
     html += `<button class="list-btn" onclick="selectM2StructType('${t.replace(/'/g,"\'")}')">
-      <div class="list-icon" style="padding:0;background:none">${structIcons2[t]||''}</div>
+      <div class="list-icon-badge">${t.replace(/1-Layer/,"1L").replace(/2-Layer/,"2L").replace(/\(L-Leg\)/,"L").replace(/\(Pipe-Leg\)/,"P").replace(/-Leg/,"").replace("Roof Slab","RS").replace("Container","CR").slice(0,4)}</div>
       <div class="list-text">
         <div class="list-name">${t}</div>
         <div class="list-sub">${count} แบบ</div>
@@ -1492,7 +1509,7 @@ function selectM2StructType(structType) {
   let html = '<div class="choice-list">';
   positions.forEach(p => {
     html += `<button class="list-btn" onclick="selectM2Position('${p}')">
-      <div class="list-icon" style="padding:0;background:none">${posIcons2[p]||''}</div>
+      ${(()=>{const l={'On Ground':'G','On Tower':'T','On Rooftop':'R','On Container Roof':'C'};return `<div class="list-icon-badge">${l[p]||p[0]}</div>`})()}
       <div class="list-text"><div class="list-name">${p}</div></div>
       <div class="list-arrow">›</div>
     </button>`;
@@ -1515,7 +1532,9 @@ function selectM2Position(position) {
 
   let html = '<div class="m2-vendor-grid">';
   vendors.forEach(v => {
+    const initials = v.charAt(0).toUpperCase();
     html += `<button class="m2-vendor-btn" onclick="selectM2Vendor('${v}')">
+      <div class="m2-vendor-initial">${initials}</div>
       <div class="m2-vendor-name">${v}</div>
     </button>`;
   });
