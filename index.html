@@ -1406,27 +1406,21 @@ function openMenu2() {
 }
 
 function fetchM2Data() {
-  const content = document.getElementById('menu2Content');
-  content.innerHTML = '<div class="loading"><div class="spinner"></div><div class="loading-text">กำลังโหลด...</div></div>';
-  fetch(`${API_URL}?action=getModels`)
+  // ใช้ MODELS_HARDCODE ก่อนเลย — แสดงทันที ไม่ต้องรอ API
+  state.m2Data = buildM2Fallback(MODELS_HARDCODE);
+  renderM2Vendors();
+
+  // Fetch K/L/M (checkPoint, spec, photoLink) จาก API ใน background
+  fetch(`${API_URL}?action=getSurveyData`)
     .then(r => r.json())
-    .then(json => {
-      // Filter only E-type, use models data + K,L,M from separate call
-      fetch(`${API_URL}?action=getSurveyData`)
-        .then(r => r.json())
-        .then(sj => {
-          state.m2Data = sj.status === 'ok' ? sj.data : buildM2Fallback(json.data || []);
-          renderM2Vendors();
-        })
-        .catch(() => {
-          state.m2Data = buildM2Fallback(json.data || []);
-          renderM2Vendors();
-        });
+    .then(sj => {
+      if (sj.status === 'ok' && sj.data.length > 0) {
+        state.m2Data = sj.data;
+        // ถ้ายังอยู่หน้า step 1 ให้ re-render เพื่อ update จำนวน
+        if (!state.m2StructType) renderM2Vendors();
+      }
     })
-    .catch(() => {
-      state.m2Data = buildM2Fallback(MODELS_HARDCODE);
-      renderM2Vendors();
-    });
+    .catch(() => {});
 }
 
 function buildM2Fallback(models) {
