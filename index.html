@@ -964,7 +964,7 @@ const MODELS_FALLBACK = MODELS_HARDCODE;
 const MODELS = MODELS_HARDCODE;
 
 // BOQ cache — ดึงครั้งเดียวแล้ว cache ไว้
-const BOQ_CACHE = {};
+const BOQ_CACHE = {}; // cleared on every load
 
 // ─── INIT ─────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", function() {
@@ -1142,7 +1142,7 @@ function renderStep5() {
   }
 
   // ดึงจาก Apps Script API
-  fetch(`${API_URL}?action=getBOQ&prefix=${pfx}`)
+  fetch(`${API_URL}?action=getBOQ&prefix=${pfx}&t=${Date.now()}`)
     .then(r => r.json())
     .then(json => {
       const boq = (json.status === 'ok') ? json.data : null;
@@ -1437,7 +1437,7 @@ function fetchM2Data() {
   renderM2Vendors();
 
   // Fetch K/L/M (checkPoint, spec, photoLink) จาก API ใน background
-  fetch(`${API_URL}?action=getSurveyData`)
+  fetch(`${API_URL}?action=getSurveyData&t=${Date.now()}`)
     .then(r => r.json())
     .then(sj => {
       if (sj.status === 'ok' && sj.data.length > 0) {
@@ -1860,7 +1860,7 @@ function prefetchNextBOQ(tabs, idx) {
   if (idx >= tabs.length) return;
   const pfx = tabs[idx];
   if (BOQ_CACHE[pfx]) { prefetchNextBOQ(tabs, idx+1); return; }
-  fetch(`${API_URL}?action=getBOQ&prefix=${pfx}`)
+  fetch(`${API_URL}?action=getBOQ&prefix=${pfx}&t=${Date.now()}`)
     .then(r => r.json())
     .then(json => {
       if (json.status === 'ok') BOQ_CACHE[pfx] = json.data;
