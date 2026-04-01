@@ -1124,7 +1124,18 @@ function renderStep4() {
       <div class="list-text"><div class="list-name">${v}</div></div>
       <div class="list-arrow">›</div>
     `;
-    btn.onclick = () => { selectItem(v, 'vendor', btn, '#vendorList'); setTimeout(() => goToStep(5), 160); };
+    btn.onclick = () => {
+      selectItem(v, 'vendor', btn, '#vendorList');
+      // Prefetch BOQ ทันทีที่กด Vendor
+      const pfx = state.siteType ? state.siteType.charAt(0) : 'E';
+      if (!BOQ_CACHE[pfx]) {
+        fetch(`${API_URL}?action=getBOQ&prefix=${pfx}&t=${Date.now()}`)
+          .then(r => r.json())
+          .then(json => { if (json.status === 'ok') BOQ_CACHE[pfx] = json.data; })
+          .catch(() => {});
+      }
+      setTimeout(() => goToStep(5), 250);
+    };
     list.appendChild(btn);
   });
 }
