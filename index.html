@@ -982,8 +982,8 @@ document.addEventListener("DOMContentLoaded", function() {
   updateNavUI();
   renderStep1();
 
-  // Prefetch BOQ — ทีละ tab ไม่พร้อมกัน ไม่ block render
-  setTimeout(() => prefetchNextBOQ(['E','N','R'], 0), 3000);
+  // Prefetch BOQ เฉพาะ E-type ก่อน (พบบ่อยสุด) รอ 5 วิหลัง render
+  setTimeout(() => prefetchNextBOQ(['E'], 0), 5000);
 });
 
 // ─── RENDER STEP 1 ────────────────────────────────────
@@ -1882,9 +1882,9 @@ function prefetchNextBOQ(tabs, idx) {
     .then(r => r.json())
     .then(json => {
       if (json.status === 'ok') BOQ_CACHE[pfx] = json.data;
-      setTimeout(() => prefetchNextBOQ(tabs, idx+1), 800);
+      setTimeout(() => prefetchNextBOQ(tabs, idx+1), 2000);
     })
-    .catch(() => setTimeout(() => prefetchNextBOQ(tabs, idx+1), 800));
+    .catch(() => setTimeout(() => prefetchNextBOQ(tabs, idx+1), 2000));
 }
 
 function showToast(msg) {
