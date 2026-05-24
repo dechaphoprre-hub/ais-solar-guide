@@ -6,27 +6,27 @@
     <title>Hia Solar Master Drawing List</title>
     <style>
         body {
-            background-color: #0F172A; /* ดำสนิทแบบพรีเมียม */
+            background-color: #0F172A;
             color: #E2E8F0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
             padding: 16px;
         }
         .container {
-            max-width: 700px;
+            max-width: 650px;
             margin: 0 auto;
         }
         .header-section {
             text-align: center;
-            padding: 15px 0;
+            padding: 20px 0;
             border-bottom: 2px solid #1E293B;
             margin-bottom: 20px;
         }
         .header-section h1 {
             color: #00E676;
             font-size: 22px;
-            margin: 0 0 5px 0;
-            letter-spacing: 1px;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.5px;
         }
         .header-section p {
             color: #94A3B8;
@@ -34,14 +34,15 @@
             margin: 0;
         }
         .category-title {
-            font-size: 15px;
+            font-size: 14px;
             font-weight: bold;
             color: #00E676;
             background-color: #1E293B;
             margin: 25px 0 12px 0;
-            padding: 8px 12px;
+            padding: 10px 14px;
             border-radius: 6px;
             border-left: 4px solid #00E676;
+            letter-spacing: 0.5px;
         }
         .drawing-item-link {
             text-decoration: none;
@@ -53,7 +54,7 @@
             background-color: #1E293B;
             border: 1px solid #334155;
             border-radius: 8px;
-            padding: 12px 16px;
+            padding: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -64,15 +65,10 @@
             background-color: #243347;
             transform: translateY(-1px);
         }
-        .drawing-card.pending {
-            border: 1px dashed #475569;
-            background-color: #141E30;
-            opacity: 0.75;
-        }
         .drawing-meta {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 5px;
         }
         .badge-code {
             background-color: #0F172A;
@@ -80,26 +76,22 @@
             padding: 3px 8px;
             border-radius: 4px;
             font-weight: bold;
-            font-size: 13px;
+            font-size: 12px;
             width: fit-content;
-        }
-        .badge-info {
-            font-size: 11px;
-            color: #94A3B8;
         }
         .drawing-name {
             font-size: 14px;
             color: #F1F5F9;
             flex-grow: 1;
             padding-left: 15px;
+            word-break: break-all;
         }
         .view-action {
             font-size: 13px;
             color: #00E676;
             font-weight: bold;
-        }
-        .color-pending {
-            color: #FBBF24; /* สีเหลืองแจ้งเตือนกำลังปรับปรุง */
+            white-space: nowrap;
+            padding-left: 10px;
         }
     </style>
 </head>
@@ -108,106 +100,96 @@
 <div class="container">
     <div class="header-section">
         <h1>SOLAR STRUCTURE DRAWINGS</h1>
-        <p>ระบบตรวจสอบสารบัญแบบโครงสร้างโซลาร์เซลล์ (Master Design v2.0)</p>
+        <p>สารบัญแบบงานโครงสร้างโซลาร์เซลล์ Master Design v2.0</p>
     </div>
 
-    <div class="category-title">⚙️ CONFIG E1 - Existing (2 kW to 3 kW)</div>
+    <div class="category-title">⚙️ CONFIG E1 (1-Leg / 1-Layer)</div>
     
-    <a href="https://drive.google.com/file/d/ใส่_FILE_ID_ตรงนี้/view?usp=sharing" class="drawing-item-link" target="_blank">
+    <a href="https://drive.google.com/file/d/1yNq4z9_Zf-EVsKqtNbuQ5v4W9xOfnsT3/view?usp=sharing" class="drawing-item-link" target="_blank">
         <div class="drawing-card">
-            <div class="drawing-meta">
-                <span class="badge-code">E1-G1L-HW</span>
-                <span class="badge-info">On Ground | 1-Leg</span>
-            </div>
-            <div class="drawing-name">Material: 81301500168</div>
+            <div class="drawing-meta"><span class="badge-code">1-Leg</span></div>
+            <div class="drawing-name">E1-G1L-HW.pdf</div>
             <div class="view-action">เปิดดูแบบ ↗</div>
         </div>
     </a>
 
-    <a href="https://drive.google.com/file/d/ใส่_FILE_ID_ตรงนี้/view?usp=sharing" class="drawing-item-link" target="_blank">
+    <a href="https://drive.google.com/file/d/1UUDUiS7ANbUYhLk3me_8oDn6pMG2jfYT/view?usp=sharing" class="drawing-item-link" target="_blank">
         <div class="drawing-card">
-            <div class="drawing-meta">
-                <span class="badge-code">E1-G1L-C-Hatari-1-Slab</span>
-                <span class="badge-info">On Ground Slab | 1-Leg</span>
-            </div>
-            <div class="drawing-name">Material: 081301500160</div>
+            <div class="drawing-meta"><span class="badge-code">1-Leg</span></div>
+            <div class="drawing-name">E1-G1L-C-Hatari-1-Slab.pdf</div>
             <div class="view-action">เปิดดูแบบ ↗</div>
         </div>
     </a>
 
-    <a href="https://drive.google.com/file/d/ใส่_FILE_ID_ตรงนี้/view?usp=sharing" class="drawing-item-link" target="_blank">
+    <a href="https://drive.google.com/file/d/1Hj6pWsxGwsxqfWiYylNT3PmTl0aQxAu2/view?usp=sharing" class="drawing-item-link" target="_blank">
         <div class="drawing-card">
-            <div class="drawing-meta">
-                <span class="badge-code">E1-G1L-C-Hatari-1-Soil</span>
-                <span class="badge-info">On Ground Soil | 1-Leg</span>
-            </div>
-            <div class="drawing-name">Material: 081301500256</div>
+            <div class="drawing-meta"><span class="badge-code">1-Leg</span></div>
+            <div class="drawing-name">E1-G1L-C-ITEL-Slab.pdf</div>
             <div class="view-action">เปิดดูแบบ ↗</div>
         </div>
     </a>
 
-    <div class="drawing-card pending">
-        <div class="drawing-meta">
-            <span class="badge-code">E1-G1L-C-Transpower-H-Slab</span>
-            <span class="badge-info">On Ground Slab | 1-Leg</span>
-        </div>
-        <div class="drawing-name">Material: New request-2</div>
-        <div class="view-action color-pending">กำลังปรับปรุง ⏳</div>
-    </div>
-
-    <div class="drawing-card pending">
-        <div class="drawing-meta">
-            <span class="badge-code">E1-G1L-C-Transpower-H-Soil</span>
-            <span class="badge-info">On Ground Soil | 1-Leg</span>
-        </div>
-        <div class="drawing-name">Material: New request-3</div>
-        <div class="view-action color-pending">กำลังปรับปรุง ⏳</div>
-    </div>
-
-
-    <div class="category-title">⚙️ CONFIG E2 - Existing (2 kW to 5 kW)</div>
-
-    <a href="https://drive.google.com/file/d/ใส่_FILE_ID_ตรงนี้/view?usp=sharing" class="drawing-item-link" target="_blank">
+    <a href="https://drive.google.com/file/d/1xXgFAPkNMxnCaOTLT__xt1neCiSgbsKd/view?usp=sharing" class="drawing-item-link" target="_blank">
         <div class="drawing-card">
-            <div class="drawing-meta">
-                <span class="badge-code">E2-G2L-C-Aplus-Slab</span>
-                <span class="badge-info">On Ground Slab | 2-Leg</span>
-            </div>
-            <div class="drawing-name">Material: 081301500261</div>
+            <div class="drawing-meta"><span class="badge-code">1-Leg</span></div>
+            <div class="drawing-name">E1-G1L-C-ITEL-Soil.pdf</div>
             <div class="view-action">เปิดดูแบบ ↗</div>
         </div>
     </a>
 
-    <div class="drawing-card pending">
-        <div class="drawing-meta">
-            <span class="badge-code">E2-T2-Aplus-1</span>
-            <span class="badge-info">On Tower | 2-Layer (6+2)</span>
-        </div>
-        <div class="drawing-name">Material: New request-18</div>
-        <div class="view-action color-pending">กำลังปรับปรุง ⏳</div>
-    </div>
-
-
-    <div class="category-title">☀️ CONFIG N1 - New Installation (1 kW 2PV)</div>
-
-    <a href="https://drive.google.com/file/d/ใส่_FILE_ID_ตรงนี้/view?usp=sharing" class="drawing-item-link" target="_blank">
+    <a href="https://drive.google.com/file/d/1bi3vbRiTYhBtAcBnaH8JcyBMQvHLftq-/view?usp=sharing" class="drawing-item-link" target="_blank">
         <div class="drawing-card">
-            <div class="drawing-meta">
-                <span class="badge-code">N1-G1L-Soil</span>
-                <span class="badge-info">On Ground | 1-Leg</span>
-            </div>
-            <div class="drawing-name">Material: 081301500176</div>
+            <div class="drawing-meta"><span class="badge-code">1-Layer</span></div>
+            <div class="drawing-name">E1-T1-L-MRV-1.pdf</div>
             <div class="view-action">เปิดดูแบบ ↗</div>
         </div>
     </a>
 
-    <a href="https://drive.google.com/file/d/ใส่_FILE_ID_ตรงนี้/view?usp=sharing" class="drawing-item-link" target="_blank">
+
+    <div class="category-title">⚙️ CONFIG E2 (2-Leg / 2-Layer)</div>
+
+    <a href="https://drive.google.com/file/d/17u5UvsqDH7wlvCy00e-ivejIGMsTDddN/view?usp=sharing" class="drawing-item-link" target="_blank">
         <div class="drawing-card">
-            <div class="drawing-meta">
-                <span class="badge-code">N1-T1-L</span>
-                <span class="badge-info">On Tower | 1-Layer (L-Leg)</span>
-            </div>
-            <div class="drawing-name">Material: 081301500188</div>
+            <div class="drawing-meta"><span class="badge-code">2-Leg</span></div>
+            <div class="drawing-name">E2-G2L-C-ITEL-Soil.pdf</div>
+            <div class="view-action">เปิดดูแบบ ↗</div>
+        </div>
+    </a>
+
+    <a href="https://drive.google.com/file/d/13WGzWcME9yEWNRgXBRcux33g3BNq4_Vv/view?usp=sharing" class="drawing-item-link" target="_blank">
+        <div class="drawing-card">
+            <div class="drawing-meta"><span class="badge-code">2-Leg</span></div>
+            <div class="drawing-name">E2-G2L-HW-H3.0-Slab.pdf</div>
+            <div class="view-action">เปิดดูแบบ ↗</div>
+        </div>
+    </a>
+
+    <a href="https://drive.google.com/file/d/1AK-Fqgfcm7fHfAk1ikZ2ZpBhO9eG-rSD/view?usp=sharing" class="drawing-item-link" target="_blank">
+        <div class="drawing-card">
+            <div class="drawing-meta"><span class="badge-code">2-Leg</span></div>
+            <div class="drawing-name">E2-G2L-HW-H3.0-Soil.pdf</div>
+            <div class="view-action">เปิดดูแบบ ↗</div>
+        </div>
+    </a>
+
+
+    <div class="category-title">☀️ CONFIG N5 (Container / Box)</div>
+
+    <a href="https://drive.google.com/file/d/1DULIu2hcmxgI0U5eZlR9jevf8jcHNt2r/view?usp=sharing" class="drawing-item-link" target="_blank">
+        <div class="drawing-card">
+            <div class="drawing-meta"><span class="badge-code">Container</span></div>
+            <div class="drawing-name">N5-CR-Transfer Box.pdf</div>
+            <div class="view-action">เปิดดูแบบ ↗</div>
+        </div>
+    </a>
+
+
+    <div class="category-title">🏠 CONFIG R3 (Container)</div>
+
+    <a href="https://drive.google.com/file/d/12XL8ptjhhgu1JPETPKiNCUAGEMAwvN2o/view?usp=sharing" class="drawing-item-link" target="_blank">
+        <div class="drawing-card">
+            <div class="drawing-meta"><span class="badge-code">Container</span></div>
+            <div class="drawing-name">N5-CR-Transfer Beam.pdf</div>
             <div class="view-action">เปิดดูแบบ ↗</div>
         </div>
     </a>
