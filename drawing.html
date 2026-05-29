@@ -3,177 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hia Solar Master Drawing Portal v6.1</title>
+    <title>Hia Solar Master Drawing Portal v5.5</title>
     <style>
-        /* ============================================================
-           🎨 STYLE 2: FUTURISTIC MINIMALIST (PREMIUM SaaS THEME)
-        ============================================================ */
-        body { 
-            background-color: #0A0A0A; 
-            color: #E5E5E5; 
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            margin: 0; 
-            padding: 12px; 
-        }
+        body { background-color: #0F172A; color: #E2E8F0; font-family: sans-serif; margin: 0; padding: 12px; }
         .container { max-width: 600px; margin: 0 auto; }
-        .header { 
-            text-align: center; 
-            color: #FFFFFF; 
-            padding: 15px 0; 
-            border-bottom: 1px solid #262626; 
-            margin-bottom: 20px; 
-        }
-        .header h1 { 
-            margin: 0; 
-            font-size: 22px; 
-            font-weight: 600; 
-            letter-spacing: -0.5px; 
-        }
-        .search-box { 
-            width: 100%; 
-            padding: 14px; 
-            margin-bottom: 20px; 
-            background: #161618; 
-            border: 1px solid #262626; 
-            border-radius: 4px; 
-            color: #FFFFFF; 
-            box-sizing: border-box; 
-            font-size: 14px; 
-            transition: all 0.2s ease; 
-        }
-        .search-box:focus { 
-            border-color: #FFFFFF; 
-            outline: none; 
-        }
-        .steps { 
-            display: flex; 
-            justify-content: space-between; 
-            font-size: 11px; 
-            color: #525252; 
-            background: #161618; 
-            padding: 10px; 
-            border-radius: 4px; 
-            margin-bottom: 20px; 
-            border: 1px solid #262626; 
-        }
-        .step.active { 
-            color: #A3E635; 
-            font-weight: 600; 
-        }
-        .view-title {
-            font-size: 12px;
-            color: #525252;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-        .grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
-        }
-        .card { 
-            background: #161618; 
-            border: 1px solid #262626; 
-            border-radius: 4px; 
-            padding: 18px 4px; 
-            text-align: center; 
-            cursor: pointer; 
-            font-weight: 500; 
-            font-size: 14px; 
-            transition: all 0.2s ease; 
-        }
-        .card:hover { 
-            border-color: #FFFFFF; 
-            background: #222225; 
-        }
-        .btn-back { 
-            background: #161618; 
-            color: #E5E5E5; 
-            border: 1px solid #262626; 
-            padding: 8px 14px; 
-            border-radius: 4px; 
-            margin-bottom: 15px; 
-            cursor: pointer; 
-            font-size: 12px; 
-            font-weight: 500;
-            transition: all 0.2s ease; 
-        }
-        .btn-back:hover { 
-            background: #222225; 
-            border-color: #525252; 
-            color: #FFFFFF; 
-        }
-        .item { 
-            background: #161618; 
-            border: 1px solid #262626; 
-            border-radius: 4px; 
-            padding: 14px; 
-            margin-bottom: 10px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            transition: all 0.2s ease; 
-            cursor: pointer;
-        }
-        .item:hover { 
-            border-color: #A3E635; 
-            background: #222225; 
-        }
-        .item.pending { 
-            opacity: 0.4; 
-            border: 1px dashed #525252; 
-        }
-        .item-code { 
-            font-weight: 500; 
-            font-size: 14px; 
-            color: #FFFFFF; 
-        }
-        .badge-mat { 
-            font-size: 11px; 
-            color: #A3E635; 
-            font-family: monospace; 
-            display: block; 
-            margin-top: 5px; 
-        }
+        .header { text-align: center; color: #00E676; padding: 10px 0; border-bottom: 1px solid #334155; margin-bottom: 15px; }
+        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; background: #1E293B; border: 1px solid #475569; border-radius: 8px; color: white; box-sizing: border-box; font-size: 14px; }
+        .steps { display: flex; justify-content: space-between; font-size: 10px; color: #64748B; background: #141E30; padding: 8px; border-radius: 6px; margin-bottom: 15px; }
+        .step.active { color: #00E676; font-weight: bold; }
+        .view { display: none; } .view.active { display: block; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .card { background: #1E293B; border: 1px solid #334155; border-radius: 8px; padding: 12px 2px; text-align: center; cursor: pointer; }
+        .card:hover { border-color: #00E676; }
+        .btn-back { background: #334155; color: white; border: none; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; cursor: pointer; }
+        .item { background: #1E293B; border: 1px solid #334155; border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .item.pending { opacity: 0.6; border: 1px dashed #475569; }
+        .badge-mat { font-size: 10px; color: #A3E635; font-family: monospace; display: block; margin-top: 4px; }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header"><h1>SOLAR MASTER DRAWING</h1></div>
     <input type="text" id="searchBar" class="search-box" placeholder="🔍 ค้นหา Material Code หรือ ชื่อแบบ..." oninput="doSearch()">
-    
     <div class="steps">
         <span id="s1" class="step active">1.หมวด</span> 
         <span id="s2" class="step">2.Vendor</span> 
         <span id="s3" class="step">3.Type</span> 
         <span id="s4" class="step">4.แบบ</span>
     </div>
-
-    <div id="v1" style="display: block;">
-        <div class="view-title">เลือกหมวดหมู่โครงสร้าง</div>
-        <div class="grid" id="c1"></div>
-    </div>
-    <div id="v2" style="display: none;">
-        <button class="btn-back" onclick="nav(1)">← ย้อนกลับ</button>
-        <div class="view-title">เลือกผู้ผลิต (Vendor)</div>
-        <div id="c2"></div>
-    </div>
-    <div id="v3" style="display: none;">
-        <button class="btn-back" onclick="nav(2)">← ย้อนกลับ</button>
-        <div class="view-title">เลือกประเภทฐานราก / การติดตั้ง</div>
-        <div id="c3"></div>
-    </div>
-    <div id="v4" style="display: none;">
-        <button class="btn-back" onclick="nav(3)">← ย้อนกลับ</button>
-        <div class="view-title">รายการไฟล์แบบเขียน (Drawing List)</div>
-        <div id="c4"></div>
-    </div>
+    <div id="v1" class="view active"><div class="grid" id="c1"></div></div>
+    <div id="v2" class="view"><button class="btn-back" onclick="nav(1)">← ย้อนกลับ</button><div id="c2"></div></div>
+    <div id="v3" class="view"><button class="btn-back" onclick="nav(2)">← ย้อนกลับ</button><div id="c3"></div></div>
+    <div id="v4" class="view"><button class="btn-back" onclick="nav(3)">← ย้อนกลับ</button><div id="c4"></div></div>
 </div>
 
 <script>
-// ฐานข้อมูลฝังตัว 84 แถวครบถ้วน สมบูรณ์ 100% จากไฟล์ Excel ล่าสุดของเฮีย
+// ฐานข้อมูลแบบฝังตัว 84 แถวครบถ้วน สมบูรณ์ 100% จากไฟล์ Excel ล่าสุดของเฮีย
 var db = [
     {"cat": "E1", "vendor": "Huawei 2020", "type": "1-Leg", "code": "E1-G1L-HW.pdf", "mat": "81301500168", "url": "1yNq4z9_Zf-EVsKqtNbuQ5v4W9xOfnsT3"},
     {"cat": "E1", "vendor": "Hatari", "type": "1-Leg", "code": "E1-G1L-C-Hatari-1-Slab.pdf", "mat": "81301500160", "url": "1UUDUiS7ANbUYhLk3me_8oDn6pMG2jfYT"},
@@ -190,7 +55,7 @@ var db = [
     {"cat": "E1", "vendor": "Interlink", "type": "2-Leg", "code": "E1-G2L-C-ITEL-Slab.pdf", "mat": "81301500262", "url": "1LP9R6KvNAS8nKTbS4KHMVgqnekpLUv-v"},
     {"cat": "E1", "vendor": "Interlink", "type": "2-Leg", "code": "E1-G1L-MRV-3PV-4PV_Soil.pdf", "mat": "81301500165", "url": "136Dmht6m_OF3coDAYRVAB1xBq9ZWqRiO"},
     {"cat": "E1", "vendor": "A-Plus", "type": "2-Leg", "code": "E1-G2L-C-Aplus-Soil.pdf", "mat": "81301500171", "url": "1LQSZp8WBfiz8GKZHyjP7E1BWAclDvbr1"},
-    {"cat": "E1", "vendor": "A-Plus", "type": "1-Layer", "code": "E1-T1-APlus.pdf", "mat": "81301500239", "url": "13drwIPa8sG3i1ILXjSr0O_EVP67SN0l"},
+    {"cat": "E1", "vendor": "A-Plus", "type": "1-Layer", "code": "E1-T1-APlus.pdf", "mat": "81301500239", "url": "13drwIPa8sG3i1ILXjSrA0O_EVP67SN0l"},
     {"cat": "E1", "vendor": "A-Plus", "type": "2-Layer (4+2)", "code": "E1-T2-Aplus.pdf", "mat": "81301500244", "url": "1tAi1YK8aU1n1DABUVJK1cOugzhNYQdf9"},
     {"cat": "E2", "vendor": "A-Plus", "type": "2-Leg", "code": "E2-G2L-C-Aplus-Slab.pdf", "mat": "81301500261", "url": "1ULlDfXUrJykZV3D-Hcj0CExSMgAW1FoH"},
     {"cat": "E2", "vendor": "Qualia", "type": "2-Leg", "code": "E2-G2L-C-Qualia-Slab.pdf", "mat": "81301500260", "url": "1QZKVeZP4k0ea250yEbvx2tdnWi_KFcyP"},
@@ -268,21 +133,11 @@ function getDriveUrl(id) {
 
 var state = {cat: "", vendor: "", type: ""};
 
-// 🎯 ระบบ Navigation ตัวจบถาวร: สั่งสลับการแสดงผลแบบฝัง Inline ชัวร์ 100% ทุกบราวเซอร์
 function nav(s) { 
     for(var i=1; i<=4; i++) { 
-        var viewEl = document.getElementById('v'+i);
-        var stepEl = document.getElementById('s'+i);
-        
-        if (i === s) {
-            viewEl.style.display = 'block'; // แสดงผลหน้าปัจจุบัน
-            stepEl.classList.add('active'); // ไฮไลท์แถบสเตป
-        } else {
-            viewEl.style.display = 'none';  // บล็อกปิดหน้าอื่นทิ้งถาวร
-            stepEl.classList.remove('active');
-        }
+        document.getElementById('v'+i).classList.toggle('active', i === s); 
+        document.getElementById('s'+i).classList.toggle('active', i === s); 
     } 
-    window.scrollTo(0, 0); // ดีดหน้าจอกลับขึ้นไปด้านบนสุดทุกครั้ง ช่างหน้างานจะได้ไม่ต้องไล่เลื่อนลงครับ
 }
 
 function renderCat() { 
@@ -316,18 +171,8 @@ function renderItems() {
     var c4 = document.getElementById('c4'); c4.innerHTML = ''; 
     db.forEach(function(d){ 
         if(d.cat == state.cat && d.vendor == state.vendor && d.type == state.type) { 
-            var isPending = (d.url == '0' || d.url == '' || d.url == '#');
             var url = getDriveUrl(d.url);
-            var actionText = isPending ? 'กำลังเตรียมแบบ' : 'เปิดดูแบบ ↗';
-            var actionColor = isPending ? '#525252' : '#A3E635';
-            
-            c4.innerHTML += '<div class="item '+(isPending?'pending':'')+'" onclick="if(\''+url+'\'!=\'#\') window.open(\''+url+'\', \'_blank\');">' +
-                '<div style="flex:1;text-align:left;">' +
-                    '<div class="item-code">'+d.code+'</div>' +
-                    '<span class="badge-mat">Mat Code: '+d.mat+'</span>' +
-                '</div>' +
-                '<span style="font-size:12px;font-weight:600;color:'+actionColor+';white-space:nowrap;">'+actionText+'</span>' +
-                '</div>'; 
+            c4.innerHTML += '<div class="item '+(url=='#'?'pending':'')+'"><a href="'+url+'" target="_blank" style="color:white;text-decoration:none;">'+d.code+'<span class="badge-mat">Mat: '+d.mat+'</span></a></div>'; 
         } 
     }); 
 }
@@ -339,18 +184,8 @@ function doSearch() {
     var c4 = document.getElementById('c4'); c4.innerHTML = '<h3>ผลการค้นหา:</h3>'; 
     db.forEach(function(d){ 
         if((d.mat && d.mat.toLowerCase().indexOf(val)>-1) || (d.code && d.code.toLowerCase().indexOf(val)>-1)) { 
-            var isPending = (d.url == '0' || d.url == '' || d.url == '#');
             var url = getDriveUrl(d.url);
-            var actionText = isPending ? 'กำลังเตรียมแบบ' : 'เปิดดูแบบ ↗';
-            var actionColor = isPending ? '#525252' : '#A3E635';
-            
-            c4.innerHTML += '<div class="item '+(isPending?'pending':'')+'" onclick="if(\''+url+'\'!=\'#\') window.open(\''+url+'\', \'_blank\');">' +
-                '<div style="flex:1;text-align:left;">' +
-                    '<div class="item-code">'+d.code+'</div>' +
-                    '<span class="badge-mat">Mat Code: '+d.mat+'</span>' +
-                '</div>' +
-                '<span style="font-size:12px;font-weight:600;color:'+actionColor+';white-space:nowrap;">'+actionText+'</span>' +
-                '</div>'; 
+            c4.innerHTML += '<div class="item '+(url=='#'?'pending':'')+'"><a href="'+url+'" target="_blank" style="color:white;text-decoration:none;">'+d.code+'<span class="badge-mat">Mat: '+d.mat+'</span></a></div>'; 
         } 
     }); 
 }
