@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Solar Master Drawing AIS 2026</title>
+    <title>Hia Solar Portal v5.1</title>
     <style>
         body { background-color: #0F172A; color: #E2E8F0; font-family: sans-serif; margin: 0; padding: 12px; }
         .container { max-width: 600px; margin: 0 auto; }
@@ -23,108 +23,32 @@
 </head>
 <body>
 <div class="container">
-    <div class="header"><h1>SOLAR MASTER DRAWING</h1></div>
-    <input type="text" id="searchBar" class="search-box" placeholder="🔍 ค้นหา Material Code หรือ ชื่อแบบ..." oninput="doSearch()">
+    <div class="header"><h1>SOLAR DRAWING PORTAL</h1></div>
+    <input type="text" id="searchBar" class="search-box" placeholder="🔍 ค้นหา Code / Mat..." oninput="doSearch()">
     <div class="steps">
         <span id="s1" class="step active">1.หมวด</span> 
         <span id="s2" class="step">2.Vendor</span> 
         <span id="s3" class="step">3.Type</span> 
         <span id="s4" class="step">4.แบบ</span>
     </div>
-    <div id="v1" class="view active"><div class="grid" id="c1"></div></div>
+    <div id="v1" class="view active"><div class="grid" id="c1">กำลังโหลดข้อมูล...</div></div>
     <div id="v2" class="view"><button class="btn-back" onclick="nav(1)">← ย้อนกลับ</button><div id="c2"></div></div>
     <div id="v3" class="view"><button class="btn-back" onclick="nav(2)">← ย้อนกลับ</button><div id="c3"></div></div>
     <div id="v4" class="view"><button class="btn-back" onclick="nav(3)">← ย้อนกลับ</button><div id="c4"></div></div>
 </div>
 <script>
-var db = [
-    {"cat": "E1", "vendor": "Huawei 2020", "type": "1-Leg", "code": "E1-G1L-HW.pdf", "mat": "81301500168", "url": "https://drive.google.com/file/d/1yNq4z9_Zf-EVsKqtNbuQ5v4W9xOfnsT3/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Hatari", "type": "1-Leg", "code": "E1-G1L-C-Hatari-1-Slab.pdf", "mat": "081301500160", "url": "https://drive.google.com/file/d/1UUDUiS7ANbUYhLk3me_8oDn6pMG2jfYT/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Hatari", "type": "1-Leg", "code": "E1-G1L-C-Hatari-1-Soil.pdf", "mat": "081301500256", "url": "https://drive.google.com/file/d/1NbIq090KFG_wrYiD-U0-e4P5TCAQYE0U/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Hatari", "type": "1-Leg", "code": "E1-G1L-C-Hatari-2-Slab.pdf", "mat": "81301500257", "url": "https://drive.google.com/file/d/1r8JLhcKS6rCZbfiUy66nXE8VJA6kX_F9/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Hatari", "type": "1-Leg", "code": "E1-G1L-C-Hatari-2-Soil.pdf", "mat": "081301500258", "url": "https://drive.google.com/file/d/1kBKgOelz0qlK5AEENq8V6xkgVn17rgte/view?usp=sharing"},
-    {"cat": "E1", "vendor": "A-Plus", "type": "1-Leg", "code": "E1-G1L-C-Aplus-Slab.pdf", "mat": "081301500173", "url": "https://drive.google.com/file/d/1geEYmQI6fINaxQkXCKeWmB_3CZB2m8bW/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Transpower", "type": "1-Leg", "code": "E1-G1L-C-Transpower-H-Slab.pdf", "mat": "New request-2", "url": "#"},
-    {"cat": "E1", "vendor": "Transpower", "type": "1-Leg", "code": "E1-G1L-C-Transpower-H-Soil.pdf", "mat": "New request-3", "url": "#"},
-    {"cat": "E1", "vendor": "Transpower", "type": "1-Leg", "code": "E1-G1L-C-Transpower-V-Slab.pdf", "mat": "New request-4", "url": "#"},
-    {"cat": "E1", "vendor": "Transpower", "type": "1-Leg", "code": "E1-G1L-C-Transpower-V-Soil.pdf", "mat": "New request-5", "url": "#"},
-    {"cat": "E1", "vendor": "Huawei 2020", "type": "2-Leg", "code": "E1-G2L-HW.pdf", "mat": "081301500166", "url": "https://drive.google.com/file/d/18XWF2f2vyKhemprwF-_oVq6AqoFMxsri/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Qualia", "type": "2-Leg", "code": "E1-G2L-C-Qualia.pdf", "mat": "081301500167", "url": "https://drive.google.com/file/d/1mXHFwhsW8N4APfwTeo899MHBAw8xNHSR/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Interlink", "type": "2-Leg", "code": "E1-G2L-C-ITEL-Slab.pdf", "mat": "081301500262", "url": "https://drive.google.com/file/d/1LP9R6KvNAS8nKTbS4KHMVgqnekpLUv-v/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Interlink", "type": "2-Leg", "code": "E1-G2L-C-ITEL-Soil.pdf", "mat": "081301500165", "url": "#"},
-    {"cat": "E1", "vendor": "A-Plus", "type": "2-Leg", "code": "E1-G2L-C-Aplus-Soil.pdf", "mat": "081301500171", "url": "https://drive.google.com/file/d/1LQSZp8WBfiz8GKZHyjP7E1BWAclDvbr1/view?usp=sharing"},
-    {"cat": "E1", "vendor": "A-Plus", "type": "1-Layer", "code": "E1-T1-APlus.pdf", "mat": "081301500239", "url": "https://drive.google.com/file/d/13drwIPa8sG3i1ILXjSrA0O_EVP67SN0l/view?usp=sharing"},
-    {"cat": "E1", "vendor": "A-Plus", "type": "2-Layer (4+2)", "code": "E1-T2-Aplus.pdf", "mat": "81301500244", "url": "https://drive.google.com/file/d/1tAi1YK8aU1n1DABUVJK1cOugzhNYQdf9/view?usp=sharing"},
-    {"cat": "E2", "vendor": "A-Plus", "type": "2-Ground Slab", "code": "E2-G2L-C-Aplus-Slab.pdf", "mat": "081301500261", "url": "https://drive.google.com/file/d/1ULlDfXUrJykZV3D-Hcj0CExSMgAW1FoH/view?usp=sharing"},
-    {"cat": "E2", "vendor": "Qualia", "type": "2-Ground Slab", "code": "E2-G2L-C-Qualia-Slab.pdf", "mat": "081301500260", "url": "https://drive.google.com/file/d/1QZKVeZP4k0ea250yEbvx2tdnWi_KFcyP/view?usp=sharing"},
-    {"cat": "E2", "vendor": "Qualia", "type": "2-Ground Soil", "code": "E2-G2L-C-Qualia-Soil.pdf", "mat": "081301500253", "url": "https://drive.google.com/file/d/18igEpbLm_ONenrCMJadgAzpFPZbGhoUe/view?usp=sharing"},
-    {"cat": "E2", "vendor": "Interlink", "type": "2-Ground Slab", "code": "E2-G2L-C-ITEL-Slab.pdf", "mat": "New request-17", "url": "https://drive.google.com/file/d/1jAeuS5W1OL07JMYI6w25ehOqjlWCk226/view?usp=sharing"},
-    {"cat": "E2", "vendor": "A-Plus", "type": "2-Layer (6+2)", "code": "E2-T2-Aplus-1.pdf", "mat": "New request-18", "url": "#"},
-    {"cat": "E2", "vendor": "A-Plus", "type": "2-Layer (6+2)", "code": "E2-T2-Aplus-2.pdf", "mat": "New request-19", "url": "#"},
-    {"cat": "N1", "vendor": "TCC", "type": "1-Leg", "code": "N1-G1L-Soil.pdf", "mat": "081301500176", "url": "https://drive.google.com/file/d/1-IeVCm7MaL17VBfeMXbmz-jABWUCj8qu/view?usp=sharing"},
-    {"cat": "N1", "vendor": "TCC", "type": "1-Leg", "code": "N1-G1L-Slab.pdf", "mat": "081301500232", "url": "https://drive.google.com/file/d/1hm_iIRFcO_CmXTF15AmwqXIwVAkQE4n2/view?usp=sharing"},
-    {"cat": "N1", "vendor": "TCC", "type": "1-Layer (L-Leg)", "code": "N1-T1-L.pdf", "mat": "081301500188", "url": "https://drive.google.com/file/d/1pP2-MjeVOrGTnnRyQwaa49kvZqkAd9Ym/view?usp=sharing"},
-    {"cat": "N1", "vendor": "TCC", "type": "1-Layer (Pipe-Leg)", "code": "N1-T1-P.pdf", "mat": "081301500192", "url": "https://drive.google.com/file/d/1TrCr793kbOCo5707Pxb0TYkYrBuWIGo3/view?usp=sharing"},
-    {"cat": "N2", "vendor": "TCC", "type": "1-Leg", "code": "N2-G1L-Soil.pdf", "mat": "081301500230", "url": "https://drive.google.com/file/d/1ICZpRmz1GqD-c6fmdk_co7a9KyhWU14J/view?usp=sharing"},
-    {"cat": "N2", "vendor": "TCC", "type": "1-Layer (L-Leg)", "code": "N2-T1-L.pdf", "mat": "081301500199", "url": "https://drive.google.com/file/d/1JGmR7t3sswrHFnt4SrQ422zPR7LPfMJa/view?usp=sharing"},
-    {"cat": "N2", "vendor": "TCC", "type": "1-Layer (Pipe-Leg)", "code": "N2-T1-P.pdf", "mat": "081301500190", "url": "https://drive.google.com/file/d/1KCFLQphtGjUX8GKXdkbn8XZvSWYm-DXv/view?usp=sharing"},
-    {"cat": "N2", "vendor": "TCC", "type": "Container", "code": "N2-CR-Corner Box.pdf", "mat": "081301500235", "url": "https://drive.google.com/file/d/19p4ljUq-N0pc4ZfrZXFdiW257gu5hm7m/view?usp=sharing"},
-    {"cat": "N2", "vendor": "TCC", "type": "Container", "code": "N2-CR-Transfer Beam.pdf", "mat": "081301500225", "url": "https://drive.google.com/file/d/1ZUXB96PY2hQLi5ZYqUJ2FnJqQNNqI6Fb/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "1-Leg", "code": "N3-G1L-Soil.pdf", "mat": "081301500206", "url": "https://drive.google.com/file/d/1tTwkdj3qDclHwIvRp1XC5KZkRQCracI_/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "2-Leg", "code": "N3-G2L-Soil.pdf", "mat": "081301500215", "url": "https://drive.google.com/file/d/1ibM_LgVADpHWjnzmO7fzMPoARNBZ7BJS/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "1-Layer (L-Leg)", "code": "N3-T1-L.pdf", "mat": "081301500208", "url": "https://drive.google.com/file/d/1HmjIT1rcuDkYsRYeMqx51qCKnFsJOKe-/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "1-Layer (Pipe-Leg)", "code": "N3-T1-P.pdf", "mat": "081301500209", "url": "https://drive.google.com/file/d/15h-MPpmVXEnJYnqkqoR_eFYFgZ33zf_j/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "2-Layer 4+2 (L-Leg)", "code": "N3-T2-L.pdf", "mat": "081301500210", "url": "https://drive.google.com/file/d/1fgjfoJghOl51nQacxox1dTYdpNo_Typh/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "2-Layer 4+2 (Pipe Leg)", "code": "N3-T2-P.pdf", "mat": "081301500211", "url": "https://drive.google.com/file/d/1H_DunUA-m0ENGxK8WLnlRNEjZNLz3u9-/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "2-Layer 4+2 (L-Leg)", "code": "N3-T2-L-SHADING OPTION.pdf", "mat": "00", "url": "https://drive.google.com/file/d/18710iEOgil3FIfzFvPQIWnHnAFG_qsGU/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "2-Layer 4+2 (Pipe Leg)", "code": "N3-T2-P-SHADING OPTION.pdf", "mat": "0", "url": "https://drive.google.com/file/d/1SSFbs4_ulLM1_q7oAYhvUfHuco5cRkDd/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "Container", "code": "N3-CR-Corner Box.pdf", "mat": "081301500227", "url": "https://drive.google.com/file/d/1wJOAvT3n-jqpkqSsKceDF4raldMf4P4f/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "Container", "code": "N3-CR-Transfer Beam.pdf", "mat": "081301500226", "url": "https://drive.google.com/file/d/1-dymiGJvQVPzjU0UtoDy_KkiufTqC0Z7/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "2-Leg", "code": "N4-G2L-Soil.pdf", "mat": "081301500229", "url": "https://drive.google.com/file/d/1ztjmLgFTRjQPj9dJknwyWGuIU8M6dlSM/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "2-Leg", "code": "N4-G2L-Slab.pdf", "mat": "081301500254", "url": "https://drive.google.com/file/d/1dXmQvqHc7Bejnl3JNBMf0ez8bQsa2kbL/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "4-Leg", "code": "N4-G4L-Soil.pdf", "mat": "081301500217", "url": "https://drive.google.com/file/d/1INdXKWDsDH1p9AewSJ3DABzws93eniqE/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "2-Layer 6+2 (L-Leg)", "code": "N4-T2-L.pdf", "mat": "081301500218", "url": "https://drive.google.com/file/d/1gnEgGECb0R7WznIzNeqI6dN0ESnjQnYr/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "2-Layer 6+2 (Pipe Leg)", "code": "N4-T2-P.pdf", "mat": "081301500219", "url": "https://drive.google.com/file/d/15TiS1yPxSZNFqaIWMgae5BCviDG7Llee/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "Container", "code": "N4-CR-2.6-Corner Box.pdf", "mat": "081301500224", "url": "https://drive.google.com/file/d/1EENm8MMHM8_HrQnHSgmqWZV6cGYV0Zag/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "Container", "code": "N4-CR-3.0-Corner Box.pdf", "mat": "081301500222", "url": "https://drive.google.com/file/d/1ZddKLBbBh7UmDWt2dYKO3Zo34EfjfkjA/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "Container", "code": "N4-CR-2.6-Transfer Beam.pdf", "mat": "081301500223", "url": "https://drive.google.com/file/d/1GYbRiMWmgrqDBBPZhZFqbKEWUrfotqE0/view?usp=sharing"},
-    {"cat": "N4", "vendor": "TCC", "type": "Container", "code": "N4-CR-3.0-Transfer Beam.pdf", "mat": "081301500221", "url": "https://drive.google.com/file/d/18gXq9bgZWc1dqlz3g07XExene2eEw5ZN/view?usp=sharing"},
-    {"cat": "R1", "vendor": "TCC", "type": "Roof 6 PV", "code": "R1-R4L.pdf", "mat": "081301500198", "url": "https://drive.google.com/file/d/17uc7FGzU812YWKBrzR-k38yQi89V8ey9/view?usp=sharing"},
-    {"cat": "R2", "vendor": "TCC", "type": "Roof 8 PV", "code": "R2-R4L.pdf", "mat": "081301500197", "url": "https://drive.google.com/file/d/1quLPmVfCMFXIygBXsuspxJqTDngm83IJ/view?usp=sharing"},
-    {"cat": "R3", "vendor": "TCC", "type": "Roof 10 PV", "code": "R3-R6L.pdf", "mat": "081301500195", "url": "https://drive.google.com/file/d/1XT-1ie2Bro5G2fCnBTmlizTIadux7T5E/view?usp=sharing"},
-    {"cat": "R2", "vendor": "TCC", "type": "Roof 8 PV", "code": "R2-R4L-H.pdf", "mat": "081301500247", "url": "https://drive.google.com/file/d/1ngdzMz6BcW1MMXfynPFkyChxdYwAHDiY/view?usp=sharing"},
-    {"cat": "R3", "vendor": "TCC", "type": "Roof 10 PV", "code": "R3-R6L-H.pdf", "mat": "081301500252", "url": "https://drive.google.com/file/d/19NbUX1wltKs0Jpt2movM_drNmzrY1rDP/view?usp=sharing"},
-    {"cat": "R2PV", "vendor": "TCC", "type": "Roof 2 PV", "code": "R4L-2PV.pdf", "mat": "081301500264", "url": "https://drive.google.com/file/d/1Kwk1dKRCP2jtnuvbJUoA6NZHhlbgENl4/view?usp=sharing"},
-    {"cat": "R2PV", "vendor": "TCC", "type": "Roof 2 PV", "code": "R4L-H-2PV.pdf", "mat": "081301500259", "url": "https://drive.google.com/file/d/1jSVyi5frJ849dqPCnPn-DU0a_YOKQqdM/view?usp=sharing"},
-    {"cat": "R4PV", "vendor": "TCC", "type": "Roof 4 PV", "code": "R4L-4PV.pdf", "mat": "081301500249", "url": "https://drive.google.com/file/d/1iRnik834C4zCUZ6-_vXUHrfCbkLxzVcj/view?usp=sharing"},
-    {"cat": "R4PV", "vendor": "TCC", "type": "Roof 4 PV", "code": "R4L-H-4PV.pdf", "mat": "081301500248", "url": "https://drive.google.com/file/d/1JN2mg2hgea-FZrA8nqb6BeaVpHqD2AyV/view?usp=sharing"},
-    {"cat": "R3", "vendor": "TCC", "type": "Container", "code": "N5-CR-Corner Box.pdf", "mat": "081301500228", "url": "https://drive.google.com/file/d/1DULIu2hcmxgI0U5eZlR9jevf8jcHNt2r/view?usp=sharing"},
-    {"cat": "R3", "vendor": "TCC", "type": "Container", "code": "N5-CR-Transfer Beam.pdf", "mat": "081301500234", "url": "https://drive.google.com/file/d/12XL8ptjhhgu1JPETPKiNCUAGEMAwvN2o/view?usp=sharing"},
-    {"cat": "E2", "vendor": "Interlink", "type": "2-Leg", "code": "E2-G2L-C-ITEL-Soil.pdf", "mat": "081301500243", "url": "https://drive.google.com/file/d/17u5UvsqDH7wlvCy00e-ivejIGMsTDddN/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Interlink", "type": "1-Leg", "code": "E1-G1L-C-ITEL-Slab.pdf", "mat": "081301500164", "url": "https://drive.google.com/file/d/1Hj6pWsxGwsxqfWiYylNT3PmTl0aQxAu2/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Interlink", "type": "1-Leg", "code": "E1-G1L-C-ITEL-Soil.pdf", "mat": "New request-1", "url": "https://drive.google.com/file/d/1xXgFAPkNMxnCaOTLT__xt1neCiSgbsKd/view?usp=sharing"},
-    {"cat": "E2", "vendor": "Huawei 2020", "type": "2-Leg", "code": "E2-G2L-HW-H3.0-Slab.pdf", "mat": "New request-16", "url": "https://drive.google.com/file/d/13WGzWcME9yEWNRgXBRcux33g3BNq4_Vv/view?usp=sharing"},
-    {"cat": "E2", "vendor": "Huawei 2020", "type": "2-Leg", "code": "E2-G2L-HW-H3.0-Soil.pdf", "mat": "081301500242", "url": "https://drive.google.com/file/d/1AK-Fqgfcm7fHfAk1ikZ2ZpBhO9eG-rSD/view?usp=sharing"},
-    {"cat": "E1", "vendor": "M.R.V", "type": "1-Layer", "code": "E1-T1-L-MRV-1.pdf", "mat": "081301500245", "url": "https://drive.google.com/file/d/1bi3vbRiTYhBtAcBnaH8JcyBMQvHLftq-"},
-    {"cat": "E1", "vendor": "M.R.V", "type": "1-Layer", "code": "E1-T1-L-MRV-2.pdf", "mat": "81301500250", "url": "https://drive.google.com/file/d/16IEbenyjp10vcTqVir_xX3UnIC_lQQkq"},
-    {"cat": "E1", "vendor": "M.R.V", "type": "1-Layer", "code": "E1-T1-MRV-6PV_Ver.pdf", "mat": "New request-12", "url": "#"},
-    {"cat": "E1", "vendor": "เพชรตั้งใจ", "type": "4-Leg", "code": "เพชรตั้งใจ 4 Leg.pdf", "mat": "", "url": "#"},
-    {"cat": "E1", "vendor": "A-Plus", "type": "1-Leg", "code": "E1-G1L-C-Aplus-Soil.pdf", "mat": "081301500255", "url": "https://drive.google.com/file/d/11bpfI4rfF9_ccIsYiRFVHfkL4wvcZUPf/view?usp=sharing"},
-    {"cat": "E1", "vendor": "A-Plus", "type": "2-Leg", "code": "E1-G2L-C-Aplus-Slab.pdf", "mat": "081301500266", "url": "https://drive.google.com/file/d/17X41Eeu8QM69lPLvgcYIGt4LEhBRjfh8/view?usp=sharing"},
-    {"cat": "E2", "vendor": "A-Plus", "type": "2-Leg", "code": "E2-G2L-C-Aplus-Soil.pdf", "mat": "081301500265", "url": "https://drive.google.com/file/d/1YtoEUUvgCLiQnIhOiMyvVcGWnrW9Saub/view?usp=sharing"},
-    {"cat": "N2", "vendor": "TCC", "type": "1-Leg", "code": "N2-G1L-Slab.pdf", "mat": "081301500241", "url": "https://drive.google.com/file/d/19sach7Bnb3Chij2_rrX5kC6n-Vbo8fNx/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "1-Leg", "code": "N3-G1L-Slab.pdf", "mat": "081301500263", "url": "https://drive.google.com/file/d/1TN8Y18S6wEhaX-oYxe4OcE9qDZiuuNvM/view?usp=sharing"},
-    {"cat": "N3", "vendor": "TCC", "type": "4-Leg", "code": "N3-G4L-Soil.pdf", "mat": "081301500246", "url": "https://drive.google.com/file/d/1_T9K0nPW9owBG2k5fVnEgBceMj28aqnP/view?usp=sharing"},
-    {"cat": "R1", "vendor": "TCC", "type": "Roof 6 PV", "code": "R1-R4L-H.pdf", "mat": "081301500240", "url": "https://drive.google.com/file/d/104ST2J54j7kbRuXOG_8zTRnz40P3F9jA/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Hatari/AAL", "type": "4-Leg", "code": "E1-G4L-H2.5-Hatari.pdf", "mat": "81301500170", "url": "https://drive.google.com/file/d/1uZ_nTiNFX39rNKRVxPdqRqJT_SIIK_9q/view?usp=sharing"},
-    {"cat": "E1", "vendor": "Hatari/AAL", "type": "4-Leg", "code": "E1-G4L-H3.5-Hatari.pdf", "mat": "81301500172", "url": "https://drive.google.com/file/d/1hXgsTqbUAUOYyo5Yk8-wW8Vebtc8XVQg/view?usp=sharing"},
-    {"cat": "E1", "vendor": "M.R.V", "type": "1-Leg", "code": "E1-G1L-MRV-3PV-2PV.pdf", "mat": "New request-6", "url": "https://drive.google.com/file/d/1sg8m3KNgKqCz4Co1FKO82cwDcfJ7foWF/view?usp=sharing"},
-    {"cat": "E1", "vendor": "M.R.V", "type": "1-Leg", "code": "E1-G1L-MRV-3PV-4PV.pdf", "mat": "New request-7", "url": "https://drive.google.com/file/d/1n4AlsiZPYTMFAmBZAK4smZVTgL1n5jtt/view?usp=sharing"},
-    {"cat": "E1", "vendor": "M.R.V", "type": "1-Layer", "code": "E1-T1-MRV-3PV-2PV.pdf", "mat": "New request-10", "url": "https://drive.google.com/file/d/1ZOqqwQj9gznpy9OClo2QmvMP7H9L79Nx/view?usp=sharing"},
-    {"cat": "E1", "vendor": "M.R.V", "type": "1-Layer", "code": "E1-T1-MRV-3PV-4PV.pdf", "mat": "New request-11", "url": "https://drive.google.com/file/d/1D0fPzrHWduR11PsbIv2Bw0xtQNsKDbNH/view?usp=sharing"}
-];
-
-var state = {cat: "", vendor: "", type: ""};
+var db = []; var state = {cat: "", vendor: "", type: ""};
+fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vS_PrcPWYbIy_oId3OYloA6vhHlfHA5gwz23bHbLMAVvp_hC7bLCKeAAgvd7pMTfRTWTT71J6q0V9b9/pub?gid=653092401&single=true&output=csv')
+    .then(function(res){ return res.text(); })
+    .then(function(text){
+        var lines = text.split(/\r?\n/);
+        for(var i=1; i<lines.length; i++){
+            var c = lines[i].split(',');
+            if(c.length >= 6) db.push({cat: c[0].trim(), vendor: c[1].trim(), type: c[2].trim(), code: c[3].trim(), mat: c[4].trim(), url: c[5].trim()});
+        }
+        console.log("Load complete: " + db.length + " rows.");
+        renderCat();
+    });
 
 function nav(s) {
     for(var i=1; i<=4; i++) {
@@ -132,28 +56,16 @@ function nav(s) {
         document.getElementById('s'+i).classList.toggle('active', i === s);
     }
 }
-function doSearch() {
-    var val = document.getElementById('searchBar').value.toLowerCase();
-    if(val.length < 1) { nav(1); return; }
-    nav(4);
-    var c4 = document.getElementById('c4'); c4.innerHTML = '<h3>ผลการค้นหา:</h3>';
-    for(var i=0; i<db.length; i++) {
-        if(db[i].mat.toLowerCase().indexOf(val) > -1 || db[i].code.toLowerCase().indexOf(val) > -1) {
-            c4.innerHTML += '<div class="item '+(db[i].url=='#'?'pending':'')+'"><a href="'+db[i].url+'" target="_blank" style="color:white;text-decoration:none;">'+db[i].code+'<span class="badge-mat">Mat: '+db[i].mat+'</span></a></div>';
-        }
-    }
-}
-// Logic สำหรับระบบนำทาง 4 สเตป... (ตี๋ขอย่อเพื่อส่งให้ครบถ้วนในช่องนี้ครับ)
 function renderCat() {
     var c1 = document.getElementById('c1'); c1.innerHTML = '';
-    var cats = []; db.forEach(function(d){ if(cats.indexOf(d.cat)==-1) cats.push(d.cat); });
+    var cats = []; db.forEach(function(d){ if(cats.indexOf(d.cat)==-1 && d.cat) cats.push(d.cat); });
     cats.sort().forEach(function(c){ c1.innerHTML += '<div class="card" onclick="selectCat(\''+c+'\')"><div class="card-title">'+c+'</div></div>'; });
 }
 function selectCat(c) { state.cat = c; nav(2); renderVendor(); }
 function renderVendor() {
     var c2 = document.getElementById('c2'); c2.innerHTML = '';
-    var vendors = []; db.forEach(function(d){ if(d.cat == state.cat && vendors.indexOf(d.vendor)==-1) vendors.push(d.vendor); });
-    vendors.sort().forEach(function(v){ c2.innerHTML += '<div class="item" onclick="selectVendor(\''+v+'\')">'+v+'</div>'; });
+    var vens = []; db.forEach(function(d){ if(d.cat == state.cat && vens.indexOf(d.vendor)==-1) vens.push(d.vendor); });
+    vens.sort().forEach(function(v){ c2.innerHTML += '<div class="item" onclick="selectVendor(\''+v+'\')">'+v+'</div>'; });
 }
 function selectVendor(v) { state.vendor = v; nav(3); renderType(); }
 function renderType() {
@@ -166,11 +78,22 @@ function renderItems() {
     var c4 = document.getElementById('c4'); c4.innerHTML = '';
     db.forEach(function(d){ 
         if(d.cat == state.cat && d.vendor == state.vendor && d.type == state.type) {
-            c4.innerHTML += '<div class="item '+(d.url=='#'?'pending':'')+'"><a href="'+d.url+'" target="_blank" style="color:white;text-decoration:none;">'+d.code+'<span class="badge-mat">Mat: '+d.mat+'</span></a></div>';
+            var url = (d.url == '0' || d.url == '' || d.url == '#') ? '#' : d.url;
+            c4.innerHTML += '<div class="item '+(url=='#'?'pending':'')+'"><a href="'+url+'" target="_blank" style="color:white;text-decoration:none;">'+d.code+'<span class="badge-mat">Mat: '+d.mat+'</span></a></div>';
         }
     });
 }
-renderCat();
+function doSearch() {
+    var val = document.getElementById('searchBar').value.toLowerCase();
+    if(val.length < 1) { nav(1); return; }
+    nav(4);
+    var c4 = document.getElementById('c4'); c4.innerHTML = '<h3>ผลการค้นหา:</h3>';
+    db.forEach(function(d){
+        if((d.mat && d.mat.toLowerCase().indexOf(val)>-1) || (d.code && d.code.toLowerCase().indexOf(val)>-1)) {
+            c4.innerHTML += '<div class="item '+(d.url=='#'||d.url=='0'?'pending':'')+'"><a href="'+(d.url=='#'||d.url=='0'?'#':d.url)+'" target="_blank" style="color:white;text-decoration:none;">'+d.code+'<span class="badge-mat">Mat: '+d.mat+'</span></a></div>';
+        }
+    });
+}
 </script>
 </body>
 </html>
