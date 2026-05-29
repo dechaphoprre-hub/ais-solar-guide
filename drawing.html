@@ -3,42 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Hia Solar Master Drawing Portal v5.5</title>
+    <title>Hia Solar Master Drawing Portal v6.2</title>
     <style>
-        body { background-color: #0F172A; color: #E2E8F0; font-family: sans-serif; margin: 0; padding: 12px; }
+        /* ============================================================
+           🎨 STYLE 1: CYBERPUNK NEON TECH (HIGH CONTRAST THEME)
+        ============================================================ */
+        body { 
+            background-color: #0A0F1D; 
+            color: #F1F5F9; 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            margin: 0; 
+            padding: 12px; 
+        }
         .container { max-width: 600px; margin: 0 auto; }
-        .header { text-align: center; color: #00E676; padding: 10px 0; border-bottom: 1px solid #334155; margin-bottom: 15px; }
-        .search-box { width: 100%; padding: 12px; margin-bottom: 15px; background: #1E293B; border: 1px solid #475569; border-radius: 8px; color: white; box-sizing: border-box; font-size: 14px; }
-        .steps { display: flex; justify-content: space-between; font-size: 10px; color: #64748B; background: #141E30; padding: 8px; border-radius: 6px; margin-bottom: 15px; }
-        .step.active { color: #00E676; font-weight: bold; }
-        .view { display: none; } .view.active { display: block; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .card { background: #1E293B; border: 1px solid #334155; border-radius: 8px; padding: 12px 2px; text-align: center; cursor: pointer; }
-        .card:hover { border-color: #00E676; }
-        .btn-back { background: #334155; color: white; border: none; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px; cursor: pointer; }
-        .item { background: #1E293B; border: 1px solid #334155; border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .item.pending { opacity: 0.6; border: 1px dashed #475569; }
-        .badge-mat { font-size: 10px; color: #A3E635; font-family: monospace; display: block; margin-top: 4px; }
+        .header { 
+            text-align: center; 
+            color: #00FF88; 
+            padding: 15px 0; 
+            border-bottom: 1px solid #1E293B; 
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+        .header h1 { 
+            margin: 0; 
+            font-size: 22px; 
+            font-weight: bold; 
+            letter-spacing: 0.5px; 
+        }
+        .search-box { 
+            width: 100%; 
+            padding: 14px; 
+            margin-bottom: 20px; 
+            background: #111A2E; 
+            border: 1px solid #1E293B; 
+            border-radius: 8px; 
+            color: #FFFFFF; 
+            box-sizing: border-box; 
+            font-size: 14px; 
+            transition: all 0.2s ease; 
+        }
+        .search-box:focus { 
+            border-color: #00FF88; 
+            outline: none; 
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.2);
+        }
+        .steps { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 11px; 
+            color: #64748B; 
+            background: #111A2E; 
+            padding: 10px; 
+            border-radius: 8px; 
+            margin-bottom: 20px; 
+            border: 1px solid #1E293B; 
+        }
+        .step.active { 
+            color: #00FF88; 
+            font-weight: bold; 
+            text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+        }
+        .view-title {
+            font-size: 12px;
+            color: #00F0FF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 8px; 
+        }
+        .card { 
+            background: #111A2E; 
+            border: 1px solid #1E293B; 
+            border-radius: 8px; 
+            padding: 18px 4px; 
+            text-align: center; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 14px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: all 0.2s ease; 
+        }
+        .card:hover { 
+            border-color: #00FF88; 
+            background: #17243F; 
+            box-shadow: 0 0 12px rgba(0, 255, 136, 0.2);
+        }
+        .btn-back { 
+            background: #111A2E; 
+            color: #F1F5F9; 
+            border: 1px solid #1E293B; 
+            padding: 8px 14px; 
+            border-radius: 8px; 
+            margin-bottom: 15px; 
+            cursor: pointer; 
+            font-size: 12px; 
+            font-weight: bold;
+            transition: all 0.2s ease; 
+        }
+        .btn-back:hover { 
+            background: #17243F; 
+            border-color: #64748B; 
+            color: #FFFFFF; 
+        }
+        .item { 
+            background: #111A2E; 
+            border: 1px solid #1E293B; 
+            border-radius: 8px; 
+            padding: 14px; 
+            margin-bottom: 10px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+            transition: all 0.2s ease; 
+            cursor: pointer;
+        }
+        .item:hover { 
+            border-color: #00F0FF; 
+            background: #17243F; 
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.15);
+        }
+        .item.pending { 
+            opacity: 0.4; 
+            border: 1px dashed #64748B; 
+            box-shadow: none;
+        }
+        .item-code { 
+            font-weight: bold; 
+            font-size: 14px; 
+            color: #FFFFFF; 
+        }
+        .badge-mat { 
+            font-size: 11px; 
+            color: #00F0FF; 
+            font-family: monospace; 
+            display: block; 
+            margin-top: 5px; 
+            text-shadow: 0 0 3px rgba(0, 240, 255, 0.3);
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header"><h1>SOLAR MASTER DRAWING</h1></div>
     <input type="text" id="searchBar" class="search-box" placeholder="🔍 ค้นหา Material Code หรือ ชื่อแบบ..." oninput="doSearch()">
+    
     <div class="steps">
         <span id="s1" class="step active">1.หมวด</span> 
         <span id="s2" class="step">2.Vendor</span> 
         <span id="s3" class="step">3.Type</span> 
         <span id="s4" class="step">4.แบบ</span>
     </div>
-    <div id="v1" class="view active"><div class="grid" id="c1"></div></div>
-    <div id="v2" class="view"><button class="btn-back" onclick="nav(1)">← ย้อนกลับ</button><div id="c2"></div></div>
-    <div id="v3" class="view"><button class="btn-back" onclick="nav(2)">← ย้อนกลับ</button><div id="c3"></div></div>
-    <div id="v4" class="view"><button class="btn-back" onclick="nav(3)">← ย้อนกลับ</button><div id="c4"></div></div>
+
+    <div id="v1" style="display: block;">
+        <div class="view-title">เลือกหมวดหมู่โครงสร้าง</div>
+        <div class="grid" id="c1"></div>
+    </div>
+    <div id="v2" style="display: none;">
+        <button class="btn-back" onclick="nav(1)">← ย้อนกลับ</button>
+        <div class="view-title">เลือกผู้ผลิต (Vendor)</div>
+        <div id="c2"></div>
+    </div>
+    <div id="v3" style="display: none;">
+        <button class="btn-back" onclick="nav(2)">← ย้อนกลับ</button>
+        <div class="view-title">เลือกประเภทฐานราก / การติดตั้ง</div>
+        <div id="c3"></div>
+    </div>
+    <div id="v4" style="display: none;">
+        <button class="btn-back" onclick="nav(3)">← ย้อนกลับ</button>
+        <div class="view-title">รายการไฟล์แบบเขียน (Drawing List)</div>
+        <div id="c4"></div>
+    </div>
 </div>
 
 <script>
-// ฐานข้อมูลแบบฝังตัว 84 แถวครบถ้วน สมบูรณ์ 100% จากไฟล์ Excel ล่าสุดของเฮีย
+// ฐานข้อมูลฝังตัว 84 แถวครบถ้วน สมบูรณ์ 100% จากไฟล์ Excel ล่าสุดของเฮีย
 var db = [
     {"cat": "E1", "vendor": "Huawei 2020", "type": "1-Leg", "code": "E1-G1L-HW.pdf", "mat": "81301500168", "url": "1yNq4z9_Zf-EVsKqtNbuQ5v4W9xOfnsT3"},
     {"cat": "E1", "vendor": "Hatari", "type": "1-Leg", "code": "E1-G1L-C-Hatari-1-Slab.pdf", "mat": "81301500160", "url": "1UUDUiS7ANbUYhLk3me_8oDn6pMG2jfYT"},
@@ -133,11 +277,21 @@ function getDriveUrl(id) {
 
 var state = {cat: "", vendor: "", type: ""};
 
+// 🎯 ระบบสลับหน้าแบบเด็ดขาด 100%: สั่งปิดหน้าเก่าทับด้วยกลไก Inline Display + ดึงจอกลับขึ้นบนสุด
 function nav(s) { 
     for(var i=1; i<=4; i++) { 
-        document.getElementById('v'+i).classList.toggle('active', i === s); 
-        document.getElementById('s'+i).classList.toggle('active', i === s); 
+        var viewEl = document.getElementById('v'+i);
+        var stepEl = document.getElementById('s'+i);
+        
+        if (i === s) {
+            viewEl.style.display = 'block'; // ดีดหน้าปัจจุบันขึ้นมาทันที
+            stepEl.classList.add('active'); 
+        } else {
+            viewEl.style.display = 'none';  // ล็อกปิดส่วนอื่นทิ้งสนิท
+            stepEl.classList.remove('active');
+        }
     } 
+    window.scrollTo(0, 0); // รีเซ็ตหน้าจอเลื่อนกลับขึ้นบนสุด เพื่อไม่ให้ช่างงงสับสนครับ
 }
 
 function renderCat() { 
@@ -171,8 +325,18 @@ function renderItems() {
     var c4 = document.getElementById('c4'); c4.innerHTML = ''; 
     db.forEach(function(d){ 
         if(d.cat == state.cat && d.vendor == state.vendor && d.type == state.type) { 
+            var isPending = (d.url == '0' || d.url == '' || d.url == '#');
             var url = getDriveUrl(d.url);
-            c4.innerHTML += '<div class="item '+(url=='#'?'pending':'')+'"><a href="'+url+'" target="_blank" style="color:white;text-decoration:none;">'+d.code+'<span class="badge-mat">Mat: '+d.mat+'</span></a></div>'; 
+            var actionText = isPending ? 'กำลังเตรียมแบบ' : 'เปิดดูแบบ ↗';
+            var actionColor = isPending ? '#64748B' : '#00FF88';
+            
+            c4.innerHTML += '<div class="item '+(isPending?'pending':'')+'" onclick="if(\''+url+'\'!=\'#\') window.open(\''+url+'\', \'_blank\');">' +
+                '<div style="flex:1;text-align:left;">' +
+                    '<div class="item-code">'+d.code+'</div>' +
+                    '<span class="badge-mat">Mat Code: '+d.mat+'</span>' +
+                '</div>' +
+                '<span style="font-size:12px;font-weight:bold;color:'+actionColor+';white-space:nowrap;">'+actionText+'</span>' +
+                '</div>'; 
         } 
     }); 
 }
@@ -184,8 +348,18 @@ function doSearch() {
     var c4 = document.getElementById('c4'); c4.innerHTML = '<h3>ผลการค้นหา:</h3>'; 
     db.forEach(function(d){ 
         if((d.mat && d.mat.toLowerCase().indexOf(val)>-1) || (d.code && d.code.toLowerCase().indexOf(val)>-1)) { 
+            var isPending = (d.url == '0' || d.url == '' || d.url == '#');
             var url = getDriveUrl(d.url);
-            c4.innerHTML += '<div class="item '+(url=='#'?'pending':'')+'"><a href="'+url+'" target="_blank" style="color:white;text-decoration:none;">'+d.code+'<span class="badge-mat">Mat: '+d.mat+'</span></a></div>'; 
+            var actionText = isPending ? 'กำลังเตรียมแบบ' : 'เปิดดูแบบ ↗';
+            var actionColor = isPending ? '#64748B' : '#00FF88';
+            
+            c4.innerHTML += '<div class="item '+(isPending?'pending':'')+'" onclick="if(\''+url+'\'!=\'#\') window.open(\''+url+'\', \'_blank\');">' +
+                '<div style="flex:1;text-align:left;">' +
+                    '<div class="item-code">'+d.code+'</div>' +
+                    '<span class="badge-mat">Mat Code: '+d.mat+'</span>' +
+                '</div>' +
+                '<span style="font-size:12px;font-weight:bold;color:'+actionColor+';white-space:nowrap;">'+actionText+'</span>' +
+                '</div>'; 
         } 
     }); 
 }
